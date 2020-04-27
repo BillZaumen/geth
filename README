@@ -1,0 +1,76 @@
+Geth is a utility for testing web servers. It will send a GET,
+HEAD, POST, or PUT request to a server. The user can supply
+the data for a POST or PUT request, and can specify various
+headers.  Geth can be configured to use a proxy if necessary.
+
+Once a request is sent, the response's headers are shown in a
+text area (or on standard output if geth is run as a command-line
+program).  The headers include those that occur during HTTP
+redirects. For supported text-based formats, all or a limite
+number of lines from the server can be displayed.
+
+It is also possible to specify timeouts for establishing
+connections and reading data: when run in a script for
+testing, it is undesirable if geth waits indefinitely
+due to a server not responding.
+
+Documention includes two 'man' pages, one for the geth command
+and the other describing file formats, and manual accessible
+from geth's "help" menu.
+
+                 ----------- COMPILATION ------------
+
+Before compilation, a recent version of the Java JDK should be
+installed.  The standard Debian package manager dpkg
+should be installed as well.
+
+To compile and build a Debian package, just type the command
+
+   make
+
+To just create the program's JAR file, run
+
+   make geth.jar
+
+These commands may use the following programs: javac, jar, cp, sed,
+install, rm, gzip, chmod, mkdir, dpkg-deb, and fakeroot.
+
+     sudo dpkg -i geth_VERSION_all.deb
+
+where VERSION is the current version number for the evdisk package.
+
+
+To install the program directly (i.e, without using the package
+manager), type the command
+
+   sudo make install
+
+                   --------- FILES -----------
+
+The Git repository for EVDisk contains several files:
+
+  * changelog contains a log describing changes from one version
+    to the next.  When changed, a new version number and date
+    should be added for each entry - none of that is done automatically.
+
+  * deb/changelog.Debian really just points to changelog and is there
+    because Debian installations expect it. The version number and date
+    are automatically generated from data in the makefile.
+
+  * deb/control is the Debian control file.
+
+  * copyright is the standard copyright notice and contains licensing
+    information (GPLv3, or later)
+
+  * geth is a shell script that will start geth from the command
+    line.
+
+  * geth.1 is the man page for the geth command
+
+  * geth.5 is the man page for the file formats that geth uses.
+
+  * src and its subdirectories contains the source code.
+
+  * Makefile contains the file used by the 'make' command to build a package.
+    For each new version, Makefile should be modified to set the new
+    version string.

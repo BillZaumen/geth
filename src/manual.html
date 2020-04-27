@@ -18,7 +18,7 @@ HTTP responses with and without a proxy.
 program.  The GUI is generally more convenient.
 </p>
 
-<h1><a name="gui">Running Geth with a GUI</a></h1>
+<h2><a name="gui">Running Geth with a GUI</a></h2>
 
 <p>To start the GUI, one simply runs <strong>geth</strong> with no
 arguments.  The application will display a window with a series of
@@ -42,7 +42,6 @@ existed when the request was started.
 
 <p><strong>geth</strong> is controlled by the following controls
 in all views:</p>
-
 <ul>
 
 <li> The URL text field has the input focus when <strong>geth</strong>
@@ -53,9 +52,9 @@ the RETURN key to send a request.
 all configured proxies to be used (see the description of
 <strong>geth</strong> preferences for details.)
 
-<li> The <strong maximum Content Characters</strong> dialog box allows
+<li> The <strong> maximum Content Characters</strong> text field allows
 you to specify how many characters of content to display.  If blank,
-the default value is taken to be zero.  If the value "*" is used, the
+the value is taken to be zero.  If the value "*" is used, the
 content length is unbounded.  Otherwise a non-negative integer should
 be entered.
 
@@ -67,7 +66,7 @@ being loaded.
 
  </ul>
 
-<h1><a name="output">Output View</a></h1>
+<h2><a name="output">Output View</a></h2>
 <p>
 Once a request has been sent, the <em>Output</em> view will be
 displayed (you can send simple requests from this view, but to change
@@ -84,7 +83,7 @@ of the output, use <strong>Control-PageUp</strong> and
 <strong>Control-PageDown</strong> respectively.
 </p>
 
-<h1><a name="request">Request Data View</a></h1>
+<h2><a name="request">Request Data View</a></h2>
 <p>
 The <em>Request Data</em> view can be traversed using keyboard
 navigation. While the platform defaults are used, typically a
@@ -186,7 +185,7 @@ web severs it can be useful to be able to send incorrectly formatted
 data.
 </p>
 
-<h1><a name="prefs">Preferences View</a></h1>
+<h2><a name="prefs">Preferences View</a></h2>
 
 <p>Preferences can be displayed and modified by selecting the
 Preferences item in the View menu, which will show a series of check
@@ -207,7 +206,7 @@ each host separated from the others by a vertical bar "|". Each
 host name can contain a "*", which serves as a wildcard.
 </p>
 
-</p>
+<p>
 The "Save Preferences" button should be clicked to save a change in
 preferences so that these values will be loaded when
 <strong>geth</strong> is restarted.  The "Cancel Changes" button
@@ -220,9 +219,9 @@ preferences in a file so these can be used when the program is run
 without the GUI by using the <strong>-P</strong> command-line option.
 </p>
 
-<h1><a name="menus">Menus</a></h1>
+<h2><a name="menus">Menus</a></h2>
 
-<p> The <strong>geth</strong> application has 4 menus.
+<p>The <strong>geth</strong> application has 4 menus.</p>
 
 <ul>
 
@@ -251,7 +250,7 @@ without the GUI by using the <strong>-P</strong> command-line option.
 
 <li>The <strong>View</strong> menu contains there options:
     <dl>
-    <dt><strongRequest Data</strong>
+    <dt><strong>Request Data</strong>
     <dd>Display options for formulating a request.
     <dt><strong>Output</strong>
     <dd>Display the panel that will show HTTP headers and content.
@@ -289,7 +288,7 @@ item named <strong>Manual</strong>.
 
 </ul>
 
-<h1><a name="terminal">Running from a Terminal</a></h1>
+<h2><a name="terminal">Running from a Terminal</a></h2>
 
 <p>When started with no arguments, the GUI is displayed. Otherwise
 the syntax is
@@ -420,6 +419,11 @@ a SOCKS proxy.
 <li><strong>http.agent</strong> The user agent that
 <strong>geth</strong> advertises in HTTP requests. Some servers may
 change their responses based on this field, although many do not.
+The user agent advertised in HTTP requests may include some
+additional text indicating which version of Java is being used.
+To precisely mimic the behavior of some other software, one
+should explicitly set a <strong>User-Agent</strong> header
+as described in the <a href="#request">Request</a> section.
 
 </ul>
 

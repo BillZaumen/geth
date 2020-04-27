@@ -111,11 +111,15 @@ the headers are shown.
 .TP
 .BI \-C\  TIMEOUT
 This option sets a timeout in seconds for establishing a connection
-to a server. A value of zero indicates an unlimited timeout.
+to a server. The timeout is given by the value of the argument
+.IR TIMEOUT .
+A value of zero indicates an unlimited timeout.
 .TP
 .BI \-P\  TIMEOUT
 This option sets a timeout in seconds for reading data from a server: the
-maximum time to wait when no data is currently available.
+maximum time to wait when no data is currently available.  The timeout is
+given by the value of the argument
+.IR TIMEOUT .
 .PP
 Using the
 .B \-C and

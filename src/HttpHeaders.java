@@ -26,6 +26,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
+import java.awt.print.PrinterException;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.CharArrayReader;
@@ -49,6 +50,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.text.MessageFormat;
 
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
@@ -90,6 +92,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.text.Document;
 import javax.swing.text.AbstractDocument;
+import javax.swing.text.EditorKit;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
 import java.util.ResourceBundle;
 
 /*
@@ -108,6 +113,7 @@ import org.bzdev.swing.WholeNumbTextField;
 import org.bzdev.swing.VTextField;
 import org.bzdev.swing.text.CharDocFilter;
 import org.bzdev.swing.HtmlWithTocPane;
+import org.bzdev.util.CopyUtilities;
 import org.bzdev.util.SafeFormatter;
 
 
@@ -1118,6 +1124,7 @@ public class HttpHeaders extends JPanel implements ActionListener {
     JMenuItem gotoTop = new JMenuItem(localeString("gotoTop"));
     JMenuItem gotoEnd = new JMenuItem(localeString("gotoEnd"));
     JMenuItem manual = new JMenuItem(localeString("manual"));
+    JMenuItem printManMI = new JMenuItem(localeString("printManual"));
 
     /*
     JEditorPane helpPane = new JEditorPane();
@@ -1152,6 +1159,32 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	    }
 	};
     */
+
+    private void printManual() {
+	try {
+	    URL url = ClassLoader.getSystemClassLoader()
+		.getResource("manual.html");
+	    if (url != null) {
+		JEditorPane pane = new JEditorPane();
+		pane.setPage(url);
+		EditorKit ekit = pane.getEditorKit();
+		if (ekit instanceof HTMLEditorKit) {
+		    HTMLEditorKit hkit = (HTMLEditorKit)ekit;
+		    StyleSheet stylesheet = hkit.getStyleSheet();
+		    StyleSheet oursheet = new StyleSheet();
+		    StringBuilder sb = new StringBuilder(512);
+		    CopyUtilities.copyResource
+			("manual.css", sb, Charset.forName("UTF-8"));
+		    oursheet.addRule(sb.toString());
+		    stylesheet.addStyleSheet(oursheet);
+		}
+		pane.print(null, new MessageFormat("- {0} -"));
+	    }
+	} catch  (PrinterException e) {
+	} catch (IOException e) {
+	}
+    }
+
     private void showHelp () {
 	if (helpframe == null) {
 	    helpframe = new JFrame(localeString("helpframe"));
@@ -1250,6 +1283,7 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	menubar.add(goMenu);
 
 	help.add(manual);
+	help.add(printManMI);
 	menubar.add(help);
 
 
@@ -1444,6 +1478,12 @@ public class HttpHeaders extends JPanel implements ActionListener {
 		    showHelp();
 		}
 	    });
+	printManMI.addActionListener(new AbstractAction() {
+		public void actionPerformed(ActionEvent e) {
+		    printManual();
+		}
+	    });
+
     }
 
     static String rmethods[] = {"GET", "PUT", "POST", "HEAD"};
@@ -1898,6 +1938,8 @@ public class HttpHeaders extends JPanel implements ActionListener {
 		    connTimeout = getValue()*1000;
 		}
 	    };
+	connTimeoutTF.setToolTipText(localeString("timeoutTip"));
+
 	readTimeoutLabel = new JLabel(localeString("readTimeout"));
 	readTimeoutTF = new WholeNumbTextField("0", 5) {
 		protected void onAccepted() {
@@ -1907,6 +1949,7 @@ public class HttpHeaders extends JPanel implements ActionListener {
 		    readTimeout = getValue()*1000;
 		}
 	    };
+	readTimeoutTF.setToolTipText(localeString("timeoutTip"));
 
 	methodLabel = new JLabel(localeString("methodLabel"));
 	requestMethod = new JComboBox<String>(rmethods);
@@ -1953,10 +1996,12 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	JPanel ctPanel = new JPanel();
 	ctPanel.setLayout(layout1);
 	addComponent(ctPanel, connTimeoutLabel, layout1, c0a);
+	addComponent(ctPanel, new JLabel(" "), layout1, c0a);
 	addComponent(ctPanel, connTimeoutTF, layout1, c4);
 	JPanel rtPanel = new JPanel();
 	rtPanel.setLayout(layout2);
 	addComponent(rtPanel, readTimeoutLabel, layout1, c0a);
+	addComponent(rtPanel, new JLabel(" "), layout1, c0a);
 	addComponent(rtPanel, readTimeoutTF, layout1, c4);
 	timeoutPanel.add(ctPanel);
 	timeoutPanel.add(new JLabel("        "));
@@ -2645,6 +2690,8 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	cdf.setOptSingleChars("*\u221E");
 	cdf.setSingleCharMap("*\u221E");
 
+	bcount.setToolTipText(localeString("bcountTip"));
+
 	panel.setLayout(new BorderLayout());
 	top.setLayout(new FlowLayout(FlowLayout.LEFT) {
 		public Dimension minimumLayoutSize(Container parent) {
@@ -2661,6 +2708,7 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	top.add(new JLabel(localeString("url")));
 	top.add(input);
 	top.add(useproxy);
+	top.add(new JLabel("    "));
 	top.add(new JLabel(localeString("maxCC")));
 	top.add(bcount);
 	top.add(button);
