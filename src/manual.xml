@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toc>
+<node title="Help" uri="resource:/manual.html">
+    <node title="Using a GUI" uri="resource:/manual.html#gui" />
+    <node title="Output View" uri="resource:/manual.html#output" />
+    <node title="Request Data View" uri="resource:/manual.html#request" />
+    <node title="Preferences" uri="resource:/manual.html#prefs" />
+    <node title="Menus" uri="resource:/manual.html#menus" />
+    <node title="Terminal Input" uri="resource:/manual.html#terminal" />
+</node>
+</toc>
+

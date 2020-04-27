@@ -1,0 +1,156 @@
+.TH GETH "1" "Apr 2020" "geth VERSION" "User Commands"
+.SH NAME
+.PP
+geth \- Trace HTTP and HTTPS responses
+.SH SYNOPSIS
+.PP
+.B geth
+.br
+.B geth
+[\FIOPTIONS\fR]
+.I URL
+.br
+.B geth \-h
+.SH DESCRIPTION
+The program
+.B geth
+is intended as an aid for debugging web servers or web-based applications.
+It provides a listing of headers and possibly data that constitute the
+response to an HTTP request. For complex cases, such as a
+series of HTTP redirects, the intermediate headers are shown, not just
+the final ones.
+When run with no argument,
+.BR geth ,
+will run as a desktop application. There is an on-line manual with a
+full description of the program available in the application's 'help'
+window.
+.PP
+When run with command-line options, the program will complete a single
+HTTP or HTTPS request, print response headers and (if desired) some or
+all of the response provided it is one of a number of text-based formats.
+.SH OPTIONS
+The options are
+.TP
+.BI \-m\  METHOD
+This option sets the HTTP method. The argument
+.B METHOD
+may be
+.BR GET ,
+.BR PUT ,
+.BR POST ,
+or
+.BR HEAD .
+.TP
+.BI \-c\  CHARSET
+This option sets the character set for reading data files.
+The argument
+.B CHARSET
+can be the name of any character set recognized by the Java class library.
+Typically this will be
+.BR UTF-8.
+.TP
+.BI \-t\  MTYPE
+This option sets the media type for data sent in HTTP requests, and
+is ignored if the
+.B \-u
+option is used. The argument MTYPE may be either
+.BR application-csh ,
+.BR application/json ,
+.BR application/x-perl ,
+.BR application/x-sh ,
+.BR application/x-tcl ,
+.BR application/x-tex ,
+.BR application/x-troff ,
+.BR application/x-troff-man ,
+.BR application/x-troff-me ,
+.BR application/x-troff-ms ,
+.BR application/x-www-form-urlencoded ,
+.BR multipart/form-data ,
+.BR text/html ,
+.BR text/plain ,
+or
+.BR text/xml .
+.TP
+.B \-u
+This option sets the media type to
+.B "application/x-www-form-urlencoded"
+and also URL-encodes any data that is provided.
+.TP
+.BI \-i\  FILE
+This option provides that a file name
+.I FILE
+for data that will be sent in an HTTP request.
+.TP
+.BI \-h\  FILE
+This option provides a file
+.I FILE
+containing HTTP request headers. The format of this file is described
+in a separate manual page
+.BR geth (5).
+.TP
+.B \-p
+This options sets proxy preferences based on the default system
+properties.
+.TP
+.BI \-P\  FILE
+This option sets proxy preferences based on the values provided in
+the file
+.BR FILE .
+The format of this file is described in
+.BR geth (5).
+.TP
+.B \-n\ all
+.TQ
+.BI \-n\  N
+This option sets the number
+.I N
+of lines from the response that will be displayed. The String
+.B all
+indicates that the full response will be shown. If missing, only
+the headers are shown.
+.TP
+.BI \-C\  TIMEOUT
+This option sets a timeout in seconds for establishing a connection
+to a server. A value of zero indicates an unlimited timeout.
+.TP
+.BI \-P\  TIMEOUT
+This option sets a timeout in seconds for reading data from a server: the
+maximum time to wait when no data is currently available.
+.PP
+Using the
+.B \-C and
+.B \-P
+options is particularly useful when
+.B geth
+is used in a script (e.g., for running a series of tests) in order to
+prevent the script from hanging.
+.SH EXIT STATUS
+.PP
+The exit codes are
+.TP
+0
+for normal termination.
+.TP
+1
+for abnormal termination.
+.SH FILES
+.B /usr/bin/geth
+.B /usr/share/geth/geth.jar
+.B /usr/share/doc/geth/copyright
+.B /usr/share/doc/geth/changelog.gz
+.B /usr/share/doc/geth/changelog.Debian.gz
+.SH AUTHOR
+Written by Bill Zaumen
+.SH COPYRIGHT
+Copyright \(co 2019 Bill Zaumen.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
+.br
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+.SH SEE ALSO
+.PP
+.BR geth (5)
+
+\"  LocalWords:  GETH geth HTTPS br FIOPTIONS fR TP CHARSET UTF MTYPE
+\"  LocalWords:  csh json perl tcl tex troff www urlencoded html xml
+\"  LocalWords:  TQ Zaumen GPLv GPL

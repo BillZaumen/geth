@@ -1,0 +1,46 @@
+.TH EPTS "5" "Apr 2020" "geth VERSION" "File Formats and Conversions"
+.SH NAME
+geth \- geth file formats
+.SH DESCRIPTION
+.B geth
+can be configures using three types of files.
+.SH PROPERTY FILES
+When the
+.B geth
+.B \-P
+option is used, the file provided to
+.B geth
+must be a Java properties file that records preferences
+Such files contain a key, followed by a colon or equal sign,
+followed by a value.
+The format is described in the Java API documentation for
+the class java.util.Properties. Aside from the use of
+escape sequence, each line contain a key, followed
+by a value, with the key and value separated by either a
+colon or equals sign.  Lines starting with '#' are ignored.
+The preferences are typically ones involving the use of
+proxies.  To create a preferences file, configure preferences
+using the Preferences option in the View menu, select and
+configure the desired preferences, and then use the
+File menu's "Export Prefs" menu item.
+.PP
+One preference is a special case: one can configure the
+user-agent header explicitly.
+.SH HEADER FILE
+A file used to represent headers contain a series of lines
+containing a header's name and its value, separated by a
+colon. leading or trailing white space will be ignored for
+both the name and the value fields.
+.SH DATA FILES
+Files that contain data that will be sent in HTTP requests in
+most cases consist of the data as it will be transmitted.
+For files whose media type is application/x-www-form-urlencoded,
+the
+.B geth
+.B \-u
+option will force
+.B geth
+to perform the URL encoding. Otherwise it must be done when the file
+is created.
+.SH SEE ALSO
+.BR geth (1)

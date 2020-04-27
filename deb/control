@@ -1,0 +1,13 @@
+Package: geth
+Version: VERSION
+Section: contrib/web
+Priority: optional
+Architecture: all
+Depends: dash, default-jdk
+Maintainer: Bill Zaumen <bill.zaumen+software@gmail.com>
+Description: Utility that sends an HTTP request and
+ records the response, including all headers and all
+ HTTP redirects. For various text-based formats, the
+ resource provided by the web server can be printed as
+ well. This utility is intended for debugging HTTP/HTTPS
+ servers.
