@@ -254,11 +254,7 @@ class HeaderEnumeration implements Enumeration {
 	}
 	hdrs = headers;
 	setHeaders(connection, headers);
-	System.out.println("*** connecting");
-	System.out.println("connect timeout: "+connection.getConnectTimeout());
-	System.out.println("read timeout: " + connection.getReadTimeout());
 	connection.connect();
-	System.out.println("*** connected");
 	conn = connection;
 	if ((method.equals("POST") || method.equals("PUT")) && data != null) {
 	    OutputStream out = connection.getOutputStream();
@@ -2620,13 +2616,11 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	    if (ourthread != thread) {
 		try {
 		    if (SwingUtilities.isEventDispatchThread()) {
-			System.out.println("dispatch thread");
 			JOptionPane.showMessageDialog
 			    (frame, localeString("reset"),
 			     localeString("resetTitle"),
 			     JOptionPane.ERROR_MESSAGE);
 		    } else {
-			System.out.println("other thread");
 			SwingUtilities.invokeAndWait(()-> {
 				JOptionPane.showMessageDialog
 				    (frame, localeString("reset"),
@@ -2638,7 +2632,6 @@ public class HttpHeaders extends JPanel implements ActionListener {
 		return;
 	    }
 	    try {
-		System.out.println("cancelling");
 		SwingUtilities.invokeLater(() -> {
 			result.setSwingSafe(false);
 			result.setVisible(true);
@@ -2898,7 +2891,6 @@ public class HttpHeaders extends JPanel implements ActionListener {
 			if (method.equals("HEAD")) bvalue = 0;
 			result.setText(elements, bvalue, ourThread);
 		    } catch (java.lang.InterruptedException ei) {
-			System.out.println("closing connection");
 			if (elements != null) elements.closeConnection();
 		    } catch (Exception ee) {
 			if (thread  == ourThread) {
@@ -2911,7 +2903,6 @@ public class HttpHeaders extends JPanel implements ActionListener {
 			    result.handleException(ee);
 			}
 		    } finally {
-			System.out.println("normal cleanup");
 			javax.swing.SwingUtilities.invokeLater(cleanup);
 		    }
 		}
