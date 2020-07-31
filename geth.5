@@ -26,6 +26,89 @@ File menu's "Export Prefs" menu item.
 .PP
 One preference is a special case: one can configure the
 user-agent header explicitly.
+The preferences that
+.B gethp
+uses for configuring proxies are the following:
+.TP
+.B http.proxyHost
+This property provides the host name for an HTTP proxy.
+.TP
+.B http.proxyPort
+This property provides the TCP port for an HTTP proxy.
+.TP
+.B http.nonProxyHosts
+This property is a list of host names, with an '|' as a separator,
+listing hosts that never use a proxy. It applies to both HTTP and
+HTTPS.
+.TP
+.B https.proxyHost
+This property provides the host name for an HTTPS proxy.
+.TP
+.B https.proxyPort
+This property provides the TCP port for an HTTPS proxy.
+.TP
+.TP
+.B ftp.proxyHost
+This property provides the host name for an FTP proxy.
+.TP
+.B ftp.proxyPort
+This property provides the TCP port for an FTP proxy
+.TP
+.B ftp.nonProxyHosts
+This property is a list of host names, with an '|' as a separator,
+listing FTP hosts that never use a proxy.
+.TP
+.B socksProxyHost
+This property provides the host name for a SOCKS proxy.
+.TP
+.B socksProxyPort
+This property provides the TCP port for a SOCKS proxy.
+.TP
+.B socksProxyVersion
+This property provides the SOCKS version. Values should be either
+4 or 5 (5 is the default).
+.TP
+.B java.net.socks.username
+This property provides a username for a SOCkSv5 server that
+requires user authentication
+.TP
+.B java.net.socks.password
+This property provides the password to use for a SOCKS server
+that provides authentication
+.TP
+.B http.agent
+This property contains the name of the HTTP user agent.
+.PP
+While any property recognized by Java can be added, several
+currently in use (this may change with future releases of Java)
+are the following:
+.TP
+.B java.net.useSystemProxies
+This indicates whether system proxies should be used. The value
+must be either "true" or "false". The default is "false".
+.TP
+.B javax.net.ssl.keyStore
+This property provides the file name for the keystore
+.TP
+.B javax.net.ssl.keyStoreType
+This property provides the type of the keystore. The default normally
+suffices (keytool should automatically provide the default type).
+.TP
+.B javax.net.ssl.keyStorePassword
+This property provides the password for the keystore. A requirement
+when using this property is that the 'store' password and 'key' password
+are identical.
+.TP
+.B javax.net.ssl.trustStore
+This property provides the file name for the truststore.
+.TP
+.B javax.net.ssl.keyStoreType
+This property provides the type of the truststore. The default normally
+suffices (keytool should automatically provide the default type).
+.TP
+.B javax.net.ssl.trustStorePassword
+This property provides the password for the truststore.
+
 .SH HEADER FILE
 A file used to represent headers contain a series of lines
 containing a header's name and its value, separated by a
@@ -44,3 +127,8 @@ to perform the URL encoding. Otherwise it must be done when the file
 is created.
 .SH SEE ALSO
 .BR geth (1)
+
+\"  LocalWords:  EPTS geth Prefs gethp TP http proxyHost proxyPort
+\"  LocalWords:  TCP nonProxyHosts HTTPS https socksProxyHost SOCkSv
+\"  LocalWords:  socksProxyPort socksProxyVersion keystore keytool
+\"  LocalWords:  truststore www urlencoded

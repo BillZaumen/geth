@@ -1,3 +1,17 @@
+geth (0.4) unstable; urgency=low
+  * Allowed the -P option to be used when starting the GUI
+    A test was also added so that the -p and -P options cannot be
+    used simultaneously. The change was made so that geth, using its
+    GUI, can establish connections to servers that use self-signed
+    certificates, a common practice during initial testing. The manual
+    was updated, with an example of the use of the -P option for
+    servers created using the BZDev library's EmbeddedWebServer class.
+ --  Bill Zaumen <bill.zaumen@gmail.com>  Fri, 31 July 2020 10:11:00 -0700
+
+geth (0.3) unstable; urgency=low
+  * First version pushed to github
+ --  Bill Zaumen <bill.zaumen@gmail.com>  Mon, 27 Apr 2020 21:00:00 -0700
+
 geth (0.1) unstable; urgency=low
   * Ported the initial version from code written a couple of decades ago.
 

@@ -457,6 +457,11 @@ interface OurRunnable extends Runnable {
 
 public class HttpHeaders extends JPanel implements ActionListener {
 
+    static boolean sawp = false;
+    static boolean sawP = false;
+
+
+
     private static ResourceBundle exbundle =
 	ResourceBundle.getBundle("lpack.HttpHeaders");
 
@@ -512,11 +517,36 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	}
 	*/
 	org.bzdev.protocols.Handlers.enable();
+	boolean useTheProxy = false;
 
 	Locale locale = Locale.forLanguageTag(localeString("forLanguageTag"));
 	javax.swing.JComponent.setDefaultLocale(locale);
+	int index = 0;
+	if (index < argv.length && argv[0].equals("-P")) {
+	    // the -P flag is tested below as well. This is a
+	    // special case: with no additioal arguments, the GUI
+	    // should start with the preferences disabled.
+	    if ((index + 1) < argv.length) try {
+		    index++;
+		    Properties props = new Properties();
+		    props.load(new FileInputStream(argv[index]));
+		    Enumeration keys = props.propertyNames();
+		    while (keys.hasMoreElements()) {
+			String key = (String)keys.nextElement();
+			String value = props.getProperty(key);
+			System.setProperty(key, value);
+		    }
+		    useTheProxy = shouldUseProxy(props);
+		    sawP = true;
+		    index++;
+		} catch (Exception ex) {
+		    System.err
+			.println(errorMsg("loadProps", argv[index+1]));
+		    System.exit (1);
+		}
+	}
 
-	if (argv.length == 0) {
+	if (argv.length == index) {
 	    javax.swing.SwingUtilities.invokeLater(new Runnable() {
 		    public void run() {
 			JFrame frame = new JFrame(localeString("frameTitle"));
@@ -543,14 +573,12 @@ public class HttpHeaders extends JPanel implements ActionListener {
 			fpane.setLayout(new BorderLayout());
 			fpane.add(hpanel, "Center");
 			hpanel.init();
-			hpanel.setVisible(true);
+ 			hpanel.setVisible(true);
 			frame.setVisible(true);
 			hpanel.start();
 		    }
 		});
 	} else {
-	    int index = 0;
-	    boolean useTheProxy = false;
 	    int  bvalue = 0;
 	    String mtype = null;
 	    String chset = null;
@@ -622,13 +650,22 @@ public class HttpHeaders extends JPanel implements ActionListener {
 		    }
 		    break;
 		case 'p':
+		    if (sawP) {
+			System.err.println(errorMsg("sawP"));
+			System.exit(1);
+		    }
 		    getPreferences(false);
 		    System.setProperties(setupEnv((Properties)
 						  startupProperties.clone(),
 						  true));
 		    useTheProxy = true;
+		    sawp = true;
 		    break;
 		case 'P':
+		    if (sawp) {
+			System.err.println(errorMsg("sawp"));
+			System.exit(1);
+		    }
 		    if ((index + 1) < argv.length) try {
 			index++;
 			Properties props = new Properties();
@@ -639,12 +676,13 @@ public class HttpHeaders extends JPanel implements ActionListener {
 			    String value = props.getProperty(key);
 			    System.setProperty(key, value);
 			}
+			useTheProxy = shouldUseProxy(props);
+			sawP = true;
 		    } catch (Exception ex) {
 			    System.err
 				.println(errorMsg("loadProps", argv[index+1]));
 			System.exit (1);
 		    }
-		    useTheProxy = true;
 		    break;
 		case 'n':
 		    if ((index + 1) < argv.length) {
@@ -703,7 +741,7 @@ public class HttpHeaders extends JPanel implements ActionListener {
 		System.err.println(errorMsg("notURL"));
 		System.exit(1);
 	    }
-	    if (!useTheProxy) {
+	    if (!useTheProxy && !sawP) {
 		    getPreferences(false);
 		    System.setProperties(setupEnv((Properties)
 						  startupProperties.clone(),
@@ -1269,7 +1307,7 @@ public class HttpHeaders extends JPanel implements ActionListener {
 
 	viewMenu.add(requestData);
 	viewMenu.add(output);
-	viewMenu.add(preferences);
+	if (!sawP) viewMenu.add(preferences);
 	goMenu.add(pageUp);
 	goMenu.add(pageDown);
 	goMenu.add(gotoTop);
@@ -1679,11 +1717,11 @@ public class HttpHeaders extends JPanel implements ActionListener {
     static String httpsProxyPortPref = "https.proxyPort";
     static String httpsProxyPort;
 
-
+    /*
     static JTextField httpsNonProxyHostsField;
     static String httpsNonProxyHostsPref = "https.nonProxyHosts";
     static String httpsNonProxyHosts;
-
+    */
 
     static JTextField ftpProxyHostField;
     static String ftpProxyHostPref = "ftp.proxyHost";
@@ -1713,6 +1751,24 @@ public class HttpHeaders extends JPanel implements ActionListener {
     static JTextField userAgentField;
     static String userAgentPref = "http.agent";
     static String userAgent;
+
+    //  preferences that correspond to Java properties
+    static final String[] propPrefs = {
+	httpProxyHostPref, httpProxyPortPref, httpNonProxyHostsPref,
+	httpsProxyHostPref, httpsProxyPortPref,
+	ftpProxyHostPref, ftpProxyPortPref, ftpNonProxyHostsPref,
+	socksProxyHostPref, socksProxyPortPref,
+	/*userAgentPref*/
+    };
+
+    static boolean shouldUseProxy(Properties props) {
+	for (String key: propPrefs) {
+	    if (props.containsKey(key)) {
+		return true;
+	    }
+	}
+	return false;
+    }
 
     static private void setPreferences() {
 	useHttpProxyFlag = useHttpProxy.isSelected();
@@ -1748,8 +1804,10 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	httpsProxyPort = httpsProxyPortField.getText();
 	userPrefs.put(httpsProxyPortPref, httpsProxyPort);
 
+	/*
 	httpsNonProxyHosts = httpsNonProxyHostsField.getText();
 	userPrefs.put(httpsNonProxyHostsPref, httpsNonProxyHosts);
+	*/
 
 	ftpProxyHost = ftpProxyHostField.getText();
 	userPrefs.put(ftpProxyHostPref, ftpProxyHost);
@@ -1784,8 +1842,10 @@ public class HttpHeaders extends JPanel implements ActionListener {
 
 	httpsProxyHost = userPrefs.get(httpsProxyHostPref, emptyString);
 	httpsProxyPort = userPrefs.get(httpsProxyPortPref, emptyString);
+	/*
 	httpsNonProxyHosts =
 	    userPrefs.get(httpsNonProxyHostsPref, emptyString);
+	*/
 
 	ftpProxyHost = userPrefs.get(ftpProxyHostPref, emptyString);
 	ftpProxyPort = userPrefs.get(ftpProxyPortPref, emptyString);
@@ -1810,7 +1870,7 @@ public class HttpHeaders extends JPanel implements ActionListener {
 
 	    httpsProxyHostField.setText(httpsProxyHost);
 	    httpsProxyPortField.setText(httpsProxyPort);
-	    httpsNonProxyHostsField.setText(httpsNonProxyHosts);
+	    // httpsNonProxyHostsField.setText(httpsNonProxyHosts);
 
 	    ftpProxyHostField.setText(ftpProxyHost);
 	    ftpProxyPortField.setText(ftpProxyPort);
@@ -1855,11 +1915,13 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	if (useProxy && useHttpsProxyFlag) {
 	    ourSetProperty(props, httpsProxyHostPref, httpsProxyHost);
 	    ourSetProperty(props, httpsProxyPortPref, httpsProxyPort);
-	    ourSetProperty(props, httpsNonProxyHostsPref, httpsNonProxyHosts);
+	    ourSetProperty(props, httpNonProxyHostsPref, httpNonProxyHosts);
 	} else {
 	    ourSetProperty(props, httpsProxyHostPref, null);
 	    ourSetProperty(props, httpsProxyPortPref, null);
-	    ourSetProperty(props, httpsNonProxyHostsPref, null);
+	    if (!useHttpProxyFlag) {
+		ourSetProperty(props, httpNonProxyHostsPref, null);
+	    }
 	}
 
 	if (useProxy && useFtpProxyFlag) {
@@ -2418,6 +2480,7 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	    };
 	addComponent(prefs, httpsProxyPortField, layout, c2);
 
+	/*
 	JLabel label6 = new JLabel(localeString("label6"));
 	addComponent(prefs, label6, layout, c1);
 	httpsNonProxyHostsField = new VTextField(40) {
@@ -2426,7 +2489,7 @@ public class HttpHeaders extends JPanel implements ActionListener {
 		}
 	    };
 	addComponent(prefs, httpsNonProxyHostsField, layout, c2);
-
+	*/
 	addComponent(prefs, new JLabel(" "), layout, c3);
 
 	JLabel label7 = new JLabel(localeString("label7"));
@@ -2762,12 +2825,13 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	panel.add(top, "North");
 	centerPanel.setLayout(cardlayout);
 	centerPanel.add(rdata, "rdata");
-	createPrefPanel();
+	if (!sawP) createPrefPanel();
 	centerPanel.add(scrollpane, "main");
 	createRdataPanel();
-	centerPanel.add(prefsScrollpane, "prefs");
-	useproxy.setSelected(useProxyDefaultFlag);
-
+	if (!sawP) {
+	    centerPanel.add(prefsScrollpane, "prefs");
+	    useproxy.setSelected(useProxyDefaultFlag);
+	}
 	// panel.add(scrollpane, "Center");
 	panel.add(centerPanel, "Center");
     }

@@ -90,14 +90,43 @@ in a separate manual page
 .TP
 .B \-p
 This options sets proxy preferences based on the default system
-properties.
+properties. If the
+.B \-p
+is set, the
+.B \-P
+option must not be set.
 .TP
 .BI \-P\  FILE
-This option sets proxy preferences based on the values provided in
+This option sets proxy preferences, and other Java properties,
+based on the values provided in
 the file
 .BR FILE .
 The format of this file is described in
 .BR geth (5).
+ If the
+.B \-P
+is set, the
+.B \-p
+option must not be set. If the
+.B \-P
+option is used and there are no other arguments, the GUI will be
+started with the preferences menu disabled.  One use of the -P option
+is to set Java properties used to configure where SSL looks for
+certificates. These are described in the
+.BR geth (5)
+portion of the manual and by the on-line help that
+.B geth
+provides. In particular, when a server uses a self-signed certificate,
+a trust store will have to be configured. If there is not a
+certificate in the trust store that matches the server's certificate,
+geth will print a message for a javax.net.ssl.SSHandshakeException
+when attempting to visit/load a web page. The message for this
+exception may include the text, "unable to find valid certification
+path to requested target," which is not particularly
+illuminating. Unfortunately, the documentation for Java's SSL
+implementation does not provide a clue as to how to determine that the
+problem is a missing or wrong certificate rather than some other
+issue.
 .TP
 .B \-n\ all
 .TQ

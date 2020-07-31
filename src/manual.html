@@ -215,8 +215,9 @@ value when <strong>geth</strong> was started. Regardless of whether
 the current preferences have been saved, the values displayed will be
 in effect whenever the application gets HTTP headers from a web site.
 The <strong>Export Prefs</strong> menu option will store the current
-preferences in a file so these can be used when the program is run
-without the GUI by using the <strong>-P</strong> command-line option.
+preferences in a file so these can be used with the <strong>-P</strong>
+option (when used with a GUI, this options suppresses the preferences
+panel).
 </p>
 
 <h2><a name="menus">Menus</a></h2>
@@ -351,12 +352,17 @@ request will be sent using the correct charset.
 This file is assumed to contain a collection of Java properties that
 will be used to configure the application, and will turn on proxy
 support when this has been configured. The <strong>-P</strong> option
-is provided so that one may easily switch between choices of proxies
-(e.g. for debugging or comparing  proxies.)
+is provided so that one may easily switch between choices of proxies,
+and can also set other options as well, such as those used to provide
+a keystore or truststore for HTTPS. Both the <strong>-p</strong> and
+the <strong>-P</strong> option cannot be used as the same time.
+Unlike other command-line options, the <strong>-P</strong> can be
+used when starting the GUI. In that case, the preferences panels
+and menu items will be suppressed.
 
 <li>The <strong>-p</strong> option causes the default preferences to
-be used (unless <strong>-P</strong> is also given) and proxy support
-to be enabled.
+be used. Both the <strong>-p</strong> and the <strong>-P</strong>
+option cannot be used as the same time.
 
 <li>The <strong>-u</strong> option indicates that any text file
 provided should be URL encoded.  The names for a control appear at the
@@ -388,18 +394,15 @@ at the end. The following properties are recognized:
 proxy
 
 <li><strong>http.nonProxyHosts</strong> - a "|" separated list of
-hosts or IP addresses of hosts that should not go through an HTTP
-proxy. A "*" can be used as a wildcard in qualified domain names.
+hosts or IP addresses of hosts that should not go through an HTTP or
+an HTTPS proxy. A "*" can be used as a wildcard in qualified domain
+names.
 
 <li><strong>https.ProxyHost</strong> - the host name or IP address (in
 "dot" notation of an HTTPS (HTTP over SSL) proxy.
 
 <li><strong>https.ProxyPort</strong> - the TCP port number for an HTTPS
 proxy.
-
-<li><strong>https.nonProxyHosts</strong> - a "|" separated list of
-hosts or IP addresses of hosts that should not go through an HTTPS
-proxy. A "*" can be used as a wildcard in qualified domain names.
 
 <li><strong>ftp.ProxyHost</strong> - the host name or IP address (in
 "dot" notation of an FTP proxy.
@@ -424,12 +427,69 @@ additional text indicating which version of Java is being used.
 To precisely mimic the behavior of some other software, one
 should explicitly set a <strong>User-Agent</strong> header
 as described in the <a href="#request">Request</a> section.
-
 </ul>
 
 <p> These are the same system properties as those defined in the
-Java class libraries for networking.
+Java class libraries for networking.  Additional java options can
+be used as well and particularly useful ones are:
 </p>
+<UL>
+  <LI><strong>java.net.socks.username</strong>.
+    This property provides a username for a SOCkSv5 server that
+    requires user authentication
+  <LI><strong>java.net.socks.password</strong>.
+    This property provides the password to use for a SOCKS server
+    that provides authentication
+  <LI><strong>java.net.useSystemProxies</strong>.
+    This indicates whether system proxies should be used. The value
+    must be either "true" or "false". The default is "false".
+  <LI><strong>javax.net.ssl.keyStore</strong>.
+    This property provides the file name for the keystore
+  <LI><strong>javax.net.ssl.keyStoreType</strong>.
+    This property provides the type of the keystore. The default normally
+    suffices (keytool should automatically provide the default type).
+  <LI><strong>javax.net.ssl.keyStorePassword</strong>.
+    This property provides the password for the keystore. A requirement
+    when using this property is that the 'store' password and 'key' password
+    are identical.
+  <LI><strong>javax.net.ssl.trustStore</strong>.
+    This property provides the file name for the truststore.
+  <LI><strong>javax.net.ssl.keyStoreType</strong>.
+    This property provides the type of the truststore. The default normally
+    suffices (keytool should automatically provide the default type).
+  <LI><strong>javax.net.ssl.trustStorePassword</strong>.
+    This property provides the password for the truststore.
+</UL>
+<P>
+For example, the following program implements a trivial web server
+using HTTPS, coded using the libbzdev-java package:
+<BLOCKQUOTE><PRE><CODE>
+     import org.bzdev.ejws.*;
+     import org.bzdev.ejws.maps.*;
+
+     public class STest {
+         public static void main(String argv[]) throws Exception {
+            EmbeddedWebServer ews =
+              new EmbeddedWebServer(8080, 48, 10,
+                                    new EmbeddedWebServer.SSLSetup());
+            ews.add("/", DirWebMap.class, new File("./", null, 
+                    true, true, true);
+            ews.start();
+         }
+     }
+</CODE></PRE></BLOCKQUOTE>
+<P>
+The corresponding geth property files (assume it is named PropFile) is
+<BLOCKQUOTE><PRE><CODE>
+    javax.net.ssl.trustStore = /usr/share/bzdev/ejwsCerts.jks
+    javax.net.ssl.trustStorePassword = changeit
+</CODE></PRE></BLOCKQUOTE>
+which can be used with the command
+<BLOCKQUOTE><PRE><CODE>
+     % geth -P PropFile
+</CODE></PRE></BLOCKQUOTE>
+Then geth will have the certificate needed to connect to the server
+at &lt;https://localhost:8080/&gt;.
 
 </body>
 </html>
@@ -440,7 +500,7 @@ Java class libraries for networking.
  -->
 <!--  LocalWords:  INPUTFILE http ProxyHost ProxyPort nonProxyHosts
  -->
-<!--  LocalWords:  https SSL socksProxyHost socksProxyPort www
+<!--  LocalWords:  https SSL socksProxyHost socksProxyPort www SOCkSv
  -->
-<!--  LocalWords:  urlencoded
+<!--  LocalWords:  urlencoded keystore truststore keytool
  -->
