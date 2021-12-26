@@ -1,0 +1,47 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE epts PUBLIC "-//BZDev//EPTS-1.0//EN"
+	  "resource:org/bzdev/epts/epts-1.0.dtd">
+<epts xmlns="http://bzdev.org/DTD/epts-1.0">
+  <image width="128" height="128">
+    <imageURI>-</imageURI>
+  </image>
+  <targetList>
+  </targetList>
+  <gcsconfig unitIndex="0" refPointIndex="6"
+	  userSpaceDistance="1.00"
+	  gcsDistance="1.00"
+	  xrefpointGCS="0.00" yrefpointGCS="0.00"/>
+  <table>
+       <row varname="box1" type="PATH_START"   />
+       <row type="MOVE_TO" x="11.0" y="118.25" xp="11.0" yp="9.75"/>
+       <row type="SEG_END" x="108.75" y="118.25" xp="108.75" yp="9.75"/>
+       <row type="SEG_END" x="108.75" y="100.25" xp="108.75" yp="27.75"/>
+       <row type="SEG_END" x="11.0" y="100.25" xp="11.0" yp="27.75"/>
+       <row type="CLOSE"/>
+       <row type="PATH_END"/>
+       <row varname="arrow" type="PATH_START"   />
+       <row type="MOVE_TO" x="50.0" y="100.25" xp="50.0" yp="27.75"/>
+       <row type="SEG_END" x="50.0" y="49.75" xp="50.0" yp="78.25"/>
+       <row type="SEG_END" x="32.25" y="49.75" xp="32.25" yp="78.25"/>
+       <row type="SEG_END" x="58.25" y="24.5" xp="58.25" yp="103.5"/>
+       <row type="SEG_END" x="83.25" y="49.75" xp="83.25" yp="78.25"/>
+       <row type="SEG_END" x="66.5" y="49.75" xp="66.5" yp="78.25"/>
+       <row type="SEG_END" x="66.5" y="100.25" xp="66.5" yp="27.75"/>
+       <row type="CLOSE"/>
+       <row type="PATH_END"/>
+       <row varname="packet" type="PATH_START"   />
+       <row type="MOVE_TO" x="23.5" y="24.75" xp="23.5" yp="103.25"/>
+       <row type="SEG_END" x="23.5" y="10.75" xp="23.5" yp="117.25"/>
+       <row type="SEG_END" x="75.25" y="10.75" xp="75.25" yp="117.25"/>
+       <row type="SEG_END" x="75.25" y="24.75" xp="75.25" yp="103.25"/>
+       <row type="CLOSE"/>
+       <row type="PATH_END"/>
+       <row varname="tail" type="PATH_START"   />
+       <row type="MOVE_TO" x="75.25" y="10.75" xp="75.25" yp="117.25"/>
+       <row type="SEG_END" x="119.5" y="10.75" xp="119.5" yp="117.25"/>
+       <row type="SEG_END" x="119.5" y="24.75" xp="119.5" yp="103.25"/>
+       <row type="SEG_END" x="75.25" y="24.75" xp="75.25" yp="103.25"/>
+       <row type="CLOSE"/>
+       <row type="PATH_END"/>
+  </table>
+</epts>

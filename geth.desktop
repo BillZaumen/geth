@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=GETH
+GenericName=Viewer for HTTP Headers
+Comment=Perform an HTTP request and show the headers from the response
+Exec=geth
+TryExec=geth
+Terminal=false
+Type=Application
+Icon=/usr/share/icons/hicolor/scalable/apps/geth.svg
+Categories=System;Utility;
+StartupNotify=false
