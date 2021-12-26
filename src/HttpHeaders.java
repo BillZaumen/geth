@@ -85,6 +85,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -106,13 +107,14 @@ import dev.wtz.swing.VTextField;
 import dev.wtz.swing.CharDocFilter;
 import dev.wtz.swing.HtmlWithTocPane;
 */
-import org.bzdev.swing.io.DocumentReader;
+import org.bzdev.swing.DarkmodeMonitor;
+import org.bzdev.swing.HtmlWithTocPane;
 import org.bzdev.swing.SimpleJTextPane;
 import org.bzdev.swing.PortTextField;
 import org.bzdev.swing.WholeNumbTextField;
 import org.bzdev.swing.VTextField;
+import org.bzdev.swing.io.DocumentReader;
 import org.bzdev.swing.text.CharDocFilter;
-import org.bzdev.swing.HtmlWithTocPane;
 import org.bzdev.util.CopyUtilities;
 import org.bzdev.util.SafeFormatter;
 
@@ -508,7 +510,33 @@ public class HttpHeaders extends JPanel implements ActionListener {
     public HttpHeaders() {super();}
     static Properties startupProperties = System.getProperties();
 
+    // Used to reposition the split pane after a change in
+    // dark mode.
+    static class SplitTracker {
+	private long time = System.currentTimeMillis();
+
+	private int[] locations = new int[2];
+	private boolean hasPrev = false;
+
+	public void setLocation(int loc) {
+	    long tm = System.currentTimeMillis();
+	    if ((tm - time) > 2000) {
+		locations[1] = locations[0];
+		locations[0] = loc;
+		hasPrev = true;
+	    } else {
+		locations[0] = loc;
+	    }
+	    time = tm;
+	}
+	public int getPreviousLocation() {
+	    return locations[hasPrev? 1: 0];
+	}
+    }
+
     static public void main(String argv[]) {
+	DarkmodeMonitor.setSystemPLAF();
+	DarkmodeMonitor.init();
 	HttpURLConnection.setFollowRedirects(false);
 	/*
 	try {
@@ -549,6 +577,29 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	if (argv.length == index) {
 	    javax.swing.SwingUtilities.invokeLater(new Runnable() {
 		    public void run() {
+			hdrTable = new JTable(hdrmodel);
+			request = new SimpleJTextPane();
+			hdrScrollPane = new JScrollPane(hdrTable);
+			inputPanel = new JPanel(new BorderLayout());
+			reqScrollPane = new JScrollPane(request);
+			inputPanel.add(new JLabel(localeString("inputData")),
+				       BorderLayout.NORTH);
+			inputPanel.add(reqScrollPane, BorderLayout.CENTER);
+			final SplitTracker tracker = new SplitTracker();
+			splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+						   hdrScrollPane, inputPanel) {
+				public void setDividerLocation(int loc) {
+				    super.setDividerLocation(loc);
+				    tracker.setLocation(loc);
+				}
+			    };
+			// To prevent the split pane from moving its divider
+			// when darkmode changes.
+			DarkmodeMonitor.addPropertyChangeListener(evnt -> {
+				splitPane.setDividerLocation
+				    (tracker.getPreviousLocation());
+			    });
+
 			JFrame frame = new JFrame(localeString("frameTitle"));
 			Container fpane = frame.getContentPane();
 			frame.addWindowListener(new WindowAdapter () {
@@ -882,6 +933,11 @@ public class HttpHeaders extends JPanel implements ActionListener {
     JButton button = new JButton(localeString("button"));
     static final Color CONTENT_COLOR = new Color((int)0,(int)96,(int)0);
     static final Color EXCEPTION_COLOR = new Color((int)96,(int)0,(int)0);
+    static final Color CONTENT_COLOR_DM = new Color((int)0,(int)255,(int)0);
+    static final Color EXCEPTION_COLOR_DM = new Color((int)255,(int)0,(int)0);
+
+    static Color contentColor = CONTENT_COLOR;
+    static Color exceptionColor = EXCEPTION_COLOR;
 
     static final int BUF_SIZE = 8092;
 
@@ -889,11 +945,30 @@ public class HttpHeaders extends JPanel implements ActionListener {
     public class OurTextPane extends SimpleJTextPane {
 	public OurTextPane() {
 	    super();
+	    if (DarkmodeMonitor.getDarkmode()) {
+		contentColor = CONTENT_COLOR_DM;
+		exceptionColor = EXCEPTION_COLOR_DM;
+	    } else {
+		contentColor = CONTENT_COLOR;
+		exceptionColor = EXCEPTION_COLOR;
+	    }
+	    DarkmodeMonitor.addPropertyChangeListener(evnt -> {
+		    if (DarkmodeMonitor.getDarkmode()) {
+			contentColor = CONTENT_COLOR_DM;
+			exceptionColor = EXCEPTION_COLOR_DM;
+			setTextForeground(Color.WHITE);
+		    } else {
+			contentColor = CONTENT_COLOR;
+			exceptionColor = EXCEPTION_COLOR;
+			setTextForeground(Color.BLACK);
+		    }
+		    setTextBackground(getBackground());
+		});
 	}
 
 	void handleException(Throwable e) {
 	    Color savedcolor = getTextForeground();
-	    setTextForeground(EXCEPTION_COLOR);
+	    setTextForeground(exceptionColor);
 	    if (e instanceof java.lang.reflect.UndeclaredThrowableException) {
 		e = ((java.lang.reflect.UndeclaredThrowableException)e).
 		     getCause();
@@ -948,7 +1023,7 @@ public class HttpHeaders extends JPanel implements ActionListener {
 			// appendString(" characters from content\n");
 		    }
 		    setItalic(savedItalic);
-		    setTextForeground(CONTENT_COLOR);
+		    setTextForeground(contentColor);
 		}
 		while (off != n &&
 		       (i = isr.read(buffer, off, n - off)) != -1) {
@@ -991,7 +1066,9 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	    // int nbytes = bcount.getValue();
 	    setBold(false);
 	    setItalic(false);
-	    setTextForeground(Color.BLACK);
+	    Color tfg = DarkmodeMonitor.getDarkmode()? Color.WHITE:
+		Color.BLACK;
+	    setTextForeground(tfg);
 	    setText("");
 	    while (lines.hasMoreElements()) {
 		String key = (String) lines.nextElement();
@@ -1018,7 +1095,7 @@ public class HttpHeaders extends JPanel implements ActionListener {
 			|| key.startsWith(HeaderEnumeration.warning) ;
 		    Color savedcolor = getTextForeground();
 		    if (keyflag) {
-			setTextForeground(EXCEPTION_COLOR);
+			setTextForeground(exceptionColor);
 		    }
 		    appendString(key);
 		    setBold(savedbold);
@@ -1164,7 +1241,7 @@ public class HttpHeaders extends JPanel implements ActionListener {
     JEditorPane helpPane = new JEditorPane();
     JScrollPane helpScrollPane = new JScrollPane(helpPane);
     */
-    HtmlWithTocPane helpPane = new HtmlWithTocPane();
+    HtmlWithTocPane helpPane = null;
     JFrame helpframe;
 
     /*
@@ -1220,7 +1297,9 @@ public class HttpHeaders extends JPanel implements ActionListener {
     }
 
     private void showHelp () {
+	System.out.println("darkmode = " + DarkmodeMonitor.getDarkmode());
 	if (helpframe == null) {
+	    helpPane = new HtmlWithTocPane();
 	    helpframe = new JFrame(localeString("helpframe"));
 	    Container hpane = helpframe.getContentPane();
 	    int width = Integer.parseInt(localeString("helpFrameWidth"));
@@ -1633,7 +1712,7 @@ public class HttpHeaders extends JPanel implements ActionListener {
     static DefaultTableModel hdrmodel = new
 	DefaultTableModel(hdrnames, N_HDR_ROWS);
 
-    static JTable hdrTable = new JTable(hdrmodel);
+    static JTable hdrTable = null;
 
     static void clearHdrTable() {
 	int i, j;
@@ -1648,22 +1727,21 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	}
     }
 
-    static SimpleJTextPane request = new SimpleJTextPane();
-    static JScrollPane hdrScrollPane = new
-	JScrollPane(hdrTable);
-    static JPanel inputPanel = new JPanel(new BorderLayout());
+    static SimpleJTextPane request = null;
+    static JScrollPane hdrScrollPane = null;
+    static JPanel inputPanel = null;
 
-    static JScrollPane reqScrollPane = new
-	JScrollPane(request);
+    static JScrollPane reqScrollPane = null;
 
+    /*
     static {
 	inputPanel.add(new JLabel(localeString("inputData")),
 		       BorderLayout.NORTH);
 	inputPanel.add(reqScrollPane, BorderLayout.CENTER);
     }
+    */
 
-    static JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-						 hdrScrollPane, inputPanel);
+    static JSplitPane splitPane = null;
 
 
     static final String prefname = "org/bzdev/geth";
@@ -1981,6 +2059,9 @@ public class HttpHeaders extends JPanel implements ActionListener {
 
     static JFileChooser fchooser = null;
     static JFileChooser hfchooser = null;
+    static Color rdataColor = Color.BLUE.darker();
+    static Color rdataColorDM = new Color(32, 32, 64);
+
     void createRdataPanel() {
 	rdata.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
 	GridBagLayout layout = new GridBagLayout();
@@ -2034,8 +2115,13 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	hdrInsRow = new JButton(localeString("hdrInsRow"));
 	hdrDelRow = new JButton(localeString("hdrDelRow"));
 
-	Color oldbg = rdata1.getBackground();
+	// Color oldbg = rdata1.getBackground();
+	Color oldbg = UIManager.getColor("Panel.background");
 	int incr = 10;
+	if (oldbg.getRed() > 196 || oldbg.getGreen() > 196
+	    || oldbg.getBlue() > 196) {
+	    incr = -incr;
+	}
 	Color newbg = new Color(oldbg.getRed() + incr,
 				oldbg.getGreen() + incr,
 				oldbg.getBlue() + incr);
@@ -2047,6 +2133,26 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	requestMimeTypeButton.setBackground(newbg);
 	requestDataFileButton.setBackground(newbg);
 	requestHeaderFileButton.setBackground(newbg);
+
+	DarkmodeMonitor.addPropertyChangeListener(evt -> {
+		Color oldbg1 = UIManager.getColor("Panel.background");
+		int incr1 = 10;
+		if (oldbg1.getRed() > 196 || oldbg1.getGreen() > 196
+		    || oldbg1.getBlue() > 196) {
+		    incr1 = -incr1;
+		}
+		Color newbg1 = new Color(oldbg1.getRed() + incr1,
+					oldbg1.getGreen() + incr1,
+					oldbg1.getBlue() + incr1);
+
+		rdata1.setBackground(newbg1);
+		requestMethod.setBackground(newbg1);
+		urlEncodeRequestData.setBackground(newbg1);
+		inputChsetButton.setBackground(newbg1);
+		requestMimeTypeButton.setBackground(newbg1);
+		requestDataFileButton.setBackground(newbg1);
+		requestHeaderFileButton.setBackground(newbg1);
+	    });
 
 	JPanel timeoutPanel = new JPanel();
 	GridBagLayout layout1 = new GridBagLayout();
@@ -2091,7 +2197,18 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	rdataButtonPanel.add(hdrDelRow);
 	rdataButtonPanel.add(requestLoad);
 	rdataButtonPanel.add(requestClear);
-	rdataButtonPanel.setBackground(Color.BLUE.darker());
+	if (DarkmodeMonitor.getDarkmode()) {
+	    rdataButtonPanel.setBackground(rdataColorDM);
+	} else {
+	    rdataButtonPanel.setBackground(rdataColor);
+	}
+	DarkmodeMonitor.addPropertyChangeListener(evt -> {
+		if (DarkmodeMonitor.getDarkmode()) {
+		    rdataButtonPanel.setBackground(rdataColorDM);
+		} else {
+		    rdataButtonPanel.setBackground(rdataColor);
+		}
+	    });
 	addComponent(rdata1, rdataButtonPanel, layout, c3);
 
 	rdata.setLayout(new BorderLayout());
@@ -2332,6 +2449,7 @@ public class HttpHeaders extends JPanel implements ActionListener {
     }
     static String fullMimeType = null;
     void readDataFromFile(String name) throws Exception {
+	Color tfg = DarkmodeMonitor.getDarkmode()? Color.WHITE: Color.BLACK;
 	fullMimeType = requestMimeType.getText();
 	if (fullMimeType != null) fullMimeType = fullMimeType.trim();
 	request.setText("");
@@ -2365,9 +2483,9 @@ public class HttpHeaders extends JPanel implements ActionListener {
 		request.appendString(line);
 	    }
 	} else {
-	    request.setTextForeground(CONTENT_COLOR);
+	    request.setTextForeground(contentColor);
 	    request.appendString("<file:" +f.getAbsolutePath() +">");
-	    request.setTextForeground(Color.BLACK);
+	    request.setTextForeground(tfg);
 	}
     }
 

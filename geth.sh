@@ -1,2 +1,4 @@
 #!/bin/sh
-java -jar GETHDIR/geth.jar "$@"
+LIB=/usr/share/java/libbzdev.jar
+java -classpath GETHDIR/geth.jar:$LIB HttpHeaders "$@"
+

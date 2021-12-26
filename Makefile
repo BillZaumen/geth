@@ -1,4 +1,4 @@
-VERSION = 0.5
+VERSION = 0.6
 
 DATE = $(shell date -R)
 
@@ -37,37 +37,22 @@ all: deb
 classes:
 	mkdir -p classes
 
-JFILES = $(wildcard src/*.java) $(wildcard src/org/bzdev/swing/*.java) \
-	$(wildcard src/org/bzdev/protocols/*java) \
-	$(wildcard src/org/bzdev/protocols/resource/*java) \
-	$(wildcard src/org/bzdev/protocols/sresource/*java) \
-	$(wildcard src/org/bzdev/util/*.java)
+JFILES = $(wildcard src/*.java)
 
-PROPERTY_DIRS = lpack \
-		org/bzdev/swing/lpack \
-		org/bzdev/swing/io/lpack \
-		org/bzdev/protocols/resource/lpack \
-		org/bzdev/protocols/sresource/lpack \
-		org/bzdev/util/lpack
+PROPERTY_DIRS = lpack
 
-PROPERTIES = $(wildcard src/lpack/*.properties) \
-	     $(wildcard src/org/bzdev/swing/lpack/*.properties) \
-	     $(wildcard src/org/bzdev/swing/io/lpack/*.properties) \
-	     $(wildcard src/org/bzdev/protocols/resource/lpack/*.properties) \
-	     $(wildcard src/org/bzdev/protocols/sresource/lpack/*.properties) \
-	     $(wildcard src/org/bzdev/util/lpack/*.properties)
+PROPERTIES = $(wildcard src/lpack/*.properties)
 
 
-ICONS = $(wildcard src/org/bzdev/swing/icons/*.gif)
 MANUAL = src/manual.xml src/manual.html src/manual.css
 
 FLAGS = -Xlint:deprecation -Xlint:unchecked
 
 geth.jar: $(JFILES) classes $(PROPERTIES) $(ICONS) $(MANUAL)
-	javac $(FLAGS) -d classes -sourcepath src $(JFILES)
+	javac $(FLAGS) -d classes -classpath /usr/share/java/libbzdev.jar \
+		$(JFILES)
 	for i in $(MANUAL) ; do cp $$i classes; done
 	mkdir -p classes/org/bzdev/swing/icons
-	for i in $(ICONS) ; do cp $$i classes/org/bzdev/swing/icons ; done
 	for i in $(PROPERTY_DIRS) ; do \
 		mkdir -p classes/$$i ; \
 		cp src/$$i/*.properties classes/$$i; \
