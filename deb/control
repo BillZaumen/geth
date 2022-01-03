@@ -3,7 +3,7 @@ Version: VERSION
 Section: contrib/web
 Priority: optional
 Architecture: all
-Depends: dash, default-jdk, libbzdev-base-java (>= 1.3.37), ligbbzdev-desktop (>=1.3.37)
+Depends: bash (>= 3.2), default-jdk, libbzdev-base-java (>= 1.3.37), libbzdev-desktop-java (>= 1.3.37)
 Maintainer: Bill Zaumen <bill.zaumen+software@gmail.com>
 Description: Utility that sends an HTTP request and
  records the response, including all headers and all

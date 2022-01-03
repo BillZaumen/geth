@@ -1,36 +1,36 @@
-VERSION = 0.6
+VERSION = 1.0
 
 DATE = $(shell date -R)
 
 SYS_BINDIR = /usr/bin
 SYS_MANDIR = /usr/share/man
 SYS_DOCDIR = /usr/share/doc/geth
-# ICONDIR = /usr/share/icons/hicolor
+ICONDIR = /usr/share/icons/hicolor
 SYS_GETHDIR = /usr/share/geth
 
-SED_GETH = $(shell echo $(SYS_BINDIR)/geth | sed  s/\\//\\\\\\\\\\//g)
+SED_GETH = $(shell echo $(SYS_BINDIR)/geth | sed s/\\//\\\\\\\\\\//g)
 SED_GETHDIR = $(shell echo $(SYS_GETHDIR) | sed  s/\\//\\\\\\\\\\//g)
-# SED_ICONDIR =  $(shell echo $(SYS_ICONDIR) | sed  s/\\//\\\\\\\\\\//g)
+SED_ICONDIR =  $(shell echo $(SYS_ICONDIR) | sed s/\\//\\\\\\\\\\//g)
 
-# APPS_DIR = apps
-# SYS_APPDIR = /usr/share/applications
-# SYS_ICON_DIR = /usr/share/icons/hicolor
-# SYS_APP_ICON_DIR = $(SYS_ICON_DIR)/scalable/$(APPS_DIR)
+APPS_DIR = apps
+SYS_APPDIR = /usr/share/applications
+SYS_ICON_DIR = /usr/share/icons/hicolor
+SYS_APP_ICON_DIR = $(SYS_ICON_DIR)/scalable/$(APPS_DIR)
 
 BINDIR=$(DESTDIR)$(SYS_BINDIR)
 MANDIR = $(DESTDIR)$(SYS_MANDIR)
 DOCDIR = $(DESTDIR)$(SYS_DOCDIR)
-# ICONDIR = $(DESTDIR)$(SYS_ICONDIR)
+ICONDIR = $(DESTDIR)$(SYS_ICONDIR)
 GETHDIR = $(DESTDIR)$(SYS_GETHDIR)
-# APPDIR = $(DESTDIR)$(SYS_APPDIR)
-# ICON_DIR = $(DESTDIR)$(SYS_ICON_DIR)
-# APP_ICON_DIR = $(DESTDIR)$(SYS_APP_ICON_DIR)
+APPDIR = $(DESTDIR)$(SYS_APPDIR)
+ICON_DIR = $(DESTDIR)$(SYS_ICON_DIR)
+APP_ICON_DIR = $(DESTDIR)$(SYS_APP_ICON_DIR)
 
-# SOURCEICON = geth.svg
-# TARGETICON = geth.svg
-# TARGETICON_PNG = geth.png
+SOURCEICON = icons/geth.svg
+TARGETICON = geth.svg
+TARGETICON_PNG = geth.png
 
-# ICON_WIDTHS = 16 20 22 24 32 36 48 64 72 96 128 192 256
+ICON_WIDTHS = 16 20 22 24 32 36 48 64 72 96 128 192 256 512
 
 all: deb
 
@@ -48,14 +48,18 @@ MANUAL = src/manual.xml src/manual.html src/manual.css
 
 FLAGS = -Xlint:deprecation -Xlint:unchecked
 
-geth.jar: $(JFILES) classes $(PROPERTIES) $(ICONS) $(MANUAL)
+geth.jar: $(JFILES) classes $(PROPERTIES) $(SOURCEICON) $(MANUAL)
 	javac $(FLAGS) -d classes -classpath /usr/share/java/libbzdev.jar \
 		$(JFILES)
 	for i in $(MANUAL) ; do cp $$i classes; done
-	mkdir -p classes/org/bzdev/swing/icons
 	for i in $(PROPERTY_DIRS) ; do \
 		mkdir -p classes/$$i ; \
 		cp src/$$i/*.properties classes/$$i; \
+	done
+	for i in  $(ICON_WIDTHS) ; do \
+		inkscape -w $$i \
+			--export-filename=classes/geth$${i}.png \
+			$(SOURCEICON) ; \
 	done
 	jar cfe geth.jar HttpHeaders -C classes .
 
@@ -65,6 +69,8 @@ install: geth.jar
 	install -d $(MANDIR)/man5
 	install -d $(DOCDIR)
 	install -d $(GETHDIR)
+	install -d $(APP_ICON_DIR)
+	install -d $(APPDIR)
 	install -m 0644 geth.jar $(GETHDIR)
 	sed -e s/GETHDIR/$(SED_GETHDIR)/ < geth.sh > geth.tmp
 	install -m 0755 -T geth.tmp $(BINDIR)/geth
@@ -76,6 +82,15 @@ install: geth.jar
 	install -m 0644 geth.5.gz $(MANDIR)/man5
 	rm geth.1.gz
 	rm geth.5.gz
+	install -m 0644 -T $(SOURCEICON) $(APP_ICON_DIR)/$(TARGETICON)
+	for i in $(ICON_WIDTHS) ; do \
+		install -d $(ICON_DIR)/$${i}x$${i}/$(APPS_DIR) ; \
+		inkscape -w $$i --export-filename=tmp.png $(SOURCEICON) ; \
+		install -m 0644 -T tmp.png \
+			$(ICON_DIR)/$${i}x$${i}/$(APPS_DIR)/$(TARGETICON_PNG); \
+		rm tmp.png ; \
+	done
+	install -m 0644 geth.desktop $(APPDIR)
 	gzip -n -9 < changelog > changelog.gz
 	install -m 0644 changelog.gz $(DOCDIR)
 	rm changelog.gz
@@ -93,14 +108,22 @@ debLog:
 	rm changelog.Debian.gz
 
 $(DEB): deb/control copyright changelog deb/changelog.Debian \
+                deb/postinst deb/postrm \
 		geth.jar geth.sh geth.1  Makefile
 	mkdir -p BUILD
 	(cd BUILD ; rm -rf usr DEBIAN)
 	mkdir -p BUILD/DEBIAN
+	cp deb/postinst BUILD/DEBIAN/postinst
+	chmod a+x BUILD/DEBIAN/postinst
+	cp deb/postrm BUILD/DEBIAN/postrm
+	chmod a+x BUILD/DEBIAN/postrm
 	$(MAKE) install DESTDIR=BUILD debLog
 	sed -e s/VERSION/$(VERSION)/ deb/control > BUILD/DEBIAN/control
 	fakeroot dpkg-deb --build BUILD
 	mv BUILD.deb $(DEB)
+
+icons/geth.svg: icons/geth.eptt icons/geth.epts
+	(cd icons; epts -o geth.svg geth.eptt)
 
 clean:
 	rm -fr BUILD classes

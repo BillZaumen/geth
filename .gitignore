@@ -1,3 +1,5 @@
 /classes/
 /geth.jar
 /geth_*.deb
+*~
+/icons/geth.svg

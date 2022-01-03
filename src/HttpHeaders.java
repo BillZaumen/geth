@@ -8,6 +8,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -58,6 +59,8 @@ import java.util.Properties;
 import java.util.prefs.*;
 import java.util.Iterator;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.print.*;
@@ -68,6 +71,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -462,7 +466,40 @@ public class HttpHeaders extends JPanel implements ActionListener {
     static boolean sawp = false;
     static boolean sawP = false;
 
+    private static List<Image> iconList = new LinkedList<Image>();
 
+    public static List<Image> getIconList() {return iconList;}
+
+    private static String[] iconNames = {
+        "geth16.png",
+        "geth20.png",
+        "geth22.png",
+        "geth24.png",
+        "geth32.png",
+        "geth36.png",
+        "geth48.png",
+        "geth64.png",
+        "geth72.png",
+        "geth96.png",
+        "geth128.png",
+        "geth192.png",
+        "geth256.png",
+        "geth512.png"
+    };
+
+    static {
+        try {
+            for (String iconName: iconNames) {
+		System.out.println("... loading " + iconName);
+                iconList.add(new
+                             ImageIcon((HttpHeaders.class
+					.getResource(iconName)))
+                             .getImage());
+            }
+        } catch (Exception e) {
+            System.err.println("could not initilize icons");
+        }
+    }
 
     private static ResourceBundle exbundle =
 	ResourceBundle.getBundle("lpack.HttpHeaders");
@@ -601,6 +638,7 @@ public class HttpHeaders extends JPanel implements ActionListener {
 			    });
 
 			JFrame frame = new JFrame(localeString("frameTitle"));
+			frame.setIconImages(getIconList());
 			Container fpane = frame.getContentPane();
 			frame.addWindowListener(new WindowAdapter () {
 				public void windowClosing(WindowEvent e) {
@@ -1301,6 +1339,7 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	if (helpframe == null) {
 	    helpPane = new HtmlWithTocPane();
 	    helpframe = new JFrame(localeString("helpframe"));
+	    helpframe.setIconImages(getIconList());
 	    Container hpane = helpframe.getContentPane();
 	    int width = Integer.parseInt(localeString("helpFrameWidth"));
 	    int height = Integer.parseInt(localeString("helpFrameHeight"));
