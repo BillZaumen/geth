@@ -490,7 +490,6 @@ public class HttpHeaders extends JPanel implements ActionListener {
     static {
         try {
             for (String iconName: iconNames) {
-		System.out.println("... loading " + iconName);
                 iconList.add(new
                              ImageIcon((HttpHeaders.class
 					.getResource(iconName)))
@@ -653,15 +652,17 @@ public class HttpHeaders extends JPanel implements ActionListener {
 			Dimension screensize = tk.getScreenSize();
 			long sw = Math.round(screensize.getWidth());
 			long sh = (int)Math.round(screensize.getHeight());
+			HttpHeaders hpanel = new HttpHeaders(frame);
+			fpane.setLayout(new BorderLayout());
+			fpane.add(hpanel, "Center");
+			hpanel.init();
+			int tpw = hpanel.getTopwidth();
+			if (width < tpw) width = tpw;
 			sw = (800*sw)/1000;
 			sh = (800*sh)/1000;
 			if (width > sw) width = (int)sw;
 			if (height > sh) height = (int)sh;
 			frame.setSize(width,height);
-			HttpHeaders hpanel = new HttpHeaders(frame);
-			fpane.setLayout(new BorderLayout());
-			fpane.add(hpanel, "Center");
-			hpanel.init();
  			hpanel.setVisible(true);
 			frame.setVisible(true);
 			hpanel.start();
@@ -2890,6 +2891,9 @@ public class HttpHeaders extends JPanel implements ActionListener {
 
     Runnable cleanup = null;
 
+    int topwidth = 14*60;
+    public int getTopwidth() {return topwidth;}
+
     public void init() {
 	Container panel = this;
 
@@ -2918,8 +2922,19 @@ public class HttpHeaders extends JPanel implements ActionListener {
 		    return d;
 		}
 	    });
-	top.add(new JLabel(localeString("url")));
+
+	JLabel urlLabel = new JLabel(localeString("url"));
+	top.add(urlLabel);
 	top.add(input);
+	int widthOffset;
+	try {
+	    widthOffset = Integer.parseInt(localeString("widthOffset"));
+	} catch (Exception e) {
+	    widthOffset = 20;
+	}
+	topwidth = widthOffset + (int) Math.ceil
+	    (urlLabel.getPreferredSize().getWidth()
+	     + input.getPreferredSize().getWidth());
 	top.add(useproxy);
 	top.add(new JLabel("    "));
 	top.add(new JLabel(localeString("maxCC")));

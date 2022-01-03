@@ -1,9 +1,14 @@
+geth(1.0.1) unstable; urgency=low
+  *  Changed the frame width so its minimum size is computed on the
+     basis of a label and text field. The reason for the change is that
+     the minimum window size is system dependent.
+ --  Bill Zaumen <bill.zaumen@gmail.com>  Sun, 02 Jan 2022 10:11:00 -0700
+
 geth(1.0) unstable; urgency=low
   * Changed the look and feel to use the system look and feel, with
     support for 'dark mode' toggling on and off. Removed libbzdev code
     as that can now be downloaded. Added a desktop file and icons to
     integrate geth with gnome.
-
  --  Bill Zaumen <bill.zaumen@gmail.com>  Sun, 02 Jan 2022 10:11:00 -0700
 
 geth (0.4) unstable; urgency=low
