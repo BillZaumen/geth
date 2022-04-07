@@ -33,7 +33,7 @@ To just create the program's JAR file, run
    make geth.jar
 
 These commands may use the following programs: javac, jar, cp, sed,
-install, rm, gzip, chmod, mkdir, dpkg-deb, and fakeroot.
+install, inkscape, rm, gzip, chmod, mkdir, dpkg-deb, and fakeroot.
 
      sudo dpkg -i geth_VERSION_all.deb
 
@@ -68,6 +68,8 @@ The Git repository for EVDisk contains several files:
   * geth.1 is the man page for the geth command
 
   * geth.5 is the man page for the file formats that geth uses.
+
+  * geth.desktop contains the desktop file.
 
   * src and its subdirectories contains the source code.
 

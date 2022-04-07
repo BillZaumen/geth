@@ -1,5 +1,8 @@
 <html>
 <head>
+<!-- The next two lines are used by when building the web site -->
+<!-- link1 -->
+<!-- link2 -->
 <title>Geth Manual</title>
 </head>
 <body>
@@ -471,7 +474,8 @@ using HTTPS, coded using the libbzdev-java package:
          public static void main(String argv[]) throws Exception {
             EmbeddedWebServer ews =
               new EmbeddedWebServer(8080, 48, 10,
-                                    new EmbeddedWebServer.SSLSetup());
+                                    new
+                                    EmbeddedWebServer.SSLSetup());
             ews.add("/", DirWebMap.class, new File("./", null, 
                     true, true, true);
             ews.start();

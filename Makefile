@@ -1,4 +1,4 @@
-VERSION = 1.0.1
+VERSION = 1.0.2
 DATE = $(shell date -R)
 
 SYS_BINDIR = /usr/bin
@@ -31,7 +31,7 @@ TARGETICON_PNG = geth.png
 
 ICON_WIDTHS = 16 20 22 24 32 36 48 64 72 96 128 192 256 512
 
-all: deb
+all: deb docs/manual/manual.html docs/manual/manual.xml
 
 classes:
 	mkdir -p classes
@@ -61,6 +61,9 @@ geth.jar: $(JFILES) classes $(PROPERTIES) $(SOURCEICON) $(MANUAL)
 			$(SOURCEICON) ; \
 	done
 	jar cfe geth.jar HttpHeaders -C classes .
+
+version:
+	@echo $(VERSION)
 
 install: geth.jar
 	install -d $(BINDIR)
@@ -120,9 +123,24 @@ $(DEB): deb/control copyright changelog deb/changelog.Debian \
 	sed -e s/VERSION/$(VERSION)/ deb/control > BUILD/DEBIAN/control
 	fakeroot dpkg-deb --build BUILD
 	mv BUILD.deb $(DEB)
+	(cd inst; make)
+	cp inst/geth-install.jar geth-install-$(VERSION).jar
 
 icons/geth.svg: icons/geth.eptt icons/geth.epts
 	(cd icons; epts -o geth.svg geth.eptt)
+
+L1 = 's/<!-- link1 -->/<LINK HREF="print.css" REL="stylesheet" type="text\/css" MEDIA="print">/'
+
+L2 = 's/<!-- link2 -->/<LINK HREF="manual.css" REL="stylesheet" type="text\/css" MEDIA="screen">/'
+
+docs/manual/manual.html: src/manual.html
+	cat src/manual.html \
+	| sed -e 's/<!-- link1 -->/<LINK HREF="print.css" REL="stylesheet" type="text\/css" MEDIA="print">/' \
+	| sed -e 's/<!-- link2 -->/<LINK HREF="manual.css" REL="stylesheet" type="text\/css" MEDIA="screen">/' > docs/manual/manual.html
+
+docs/manual/manual.xml: src/manual.xml
+	cat src/manual.xml \
+	| sed -e 's/Help/GETH Manual /' > docs/manual/manual.xml
 
 clean:
 	rm -fr BUILD classes
