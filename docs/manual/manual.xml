@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="manual.xsl"?>
+<toc>
+  <node title="GETH Manual " uri="resource:/manual.html"
+	href="manual.html">
+    <node title="Using a GUI" uri="resource:/manual.html#gui"
+	  href="manual.html#gui" />
+    <node title="Output View" uri="resource:/manual.html#output"
+	  href="manual.html#output" />
+    <node title="Request Data View" uri="resource:/manual.html#request"
+	  href="manual.html#request" />
+    <node title="Preferences" uri="resource:/manual.html#prefs"
+	  href="manual.html#prefs" />
+    <node title="Menus" uri="resource:/manual.html#menus"
+	  href="manual.html#menus" />
+    <node title="Terminal Input" uri="resource:/manual.html#terminal"
+	  href="manual.html#terminal" />
+  </node>
+</toc>
+

@@ -1,0 +1,510 @@
+<html>
+<head>
+<!-- The next two lines are used by when building the web site -->
+<LINK HREF="print.css" REL="stylesheet" type="text/css" MEDIA="print">
+<LINK HREF="manual.css" REL="stylesheet" type="text/css" MEDIA="screen">
+<title>Geth Manual</title>
+</head>
+<body>
+<h1>Geth</h1>
+<p><strong>geth</strong> is a program that displays HTTP headers, and
+optionally content provided the content is textual. It is useful
+primarily for debugging or testing, and handles both direct requests
+and HTTP redirects.  When HTTP redirects are used by a web server,
+<strong>geth</strong> will show headers for each redirect
+individually.  <strong>geth</strong> can use proxies for HTTP, HTTPS.
+Proxies can be turned on and off as desired, to facilitate comparing
+HTTP responses with and without a proxy.
+</p>
+<p>
+<strong>geth</strong> can be run using a GUI or as a command-line
+program.  The GUI is generally more convenient.
+</p>
+
+<h2><a name="gui">Running Geth with a GUI</a></h2>
+
+<p>To start the GUI, one simply runs <strong>geth</strong> with no
+arguments.  The application will display a window with a series of
+text fields, check boxes, and buttons near the top of the screen, just
+above a large text area which will display the output.  In addition to
+menus, <strong>geth</strong> provides support keyboard navigation.
+</p>
+
+<p>The initial view displayed shows the data needed to formulate an
+HTTP request.  For the simplest use, one can simply enter a URL into
+the text box and type RETURN. Otherwise one can use the TAB key to
+move forwards or SHIFT-TAB to move backwards to cycle through buttons
+and text fields.  When at a button or checkbox, the SPACE key selects
+it (this is the normal Java convention for Java's default look and
+feel.)  Output will appear in the <em>Output</em> view (see the View
+menu.)  After typing RETURN in the <em>Request Data</em> view,
+the GUI will automatically shift to the <em>Output</em> view.
+If you cancel a request, however, one will switch back to the view that
+existed when the request was started.
+</p>
+
+<p><strong>geth</strong> is controlled by the following controls
+in all views:</p>
+<ul>
+
+<li> The URL text field has the input focus when <strong>geth</strong>
+is started. Once a URL is entered into this box, one can simply push
+the RETURN key to send a request.
+
+<li> Selecting the <strong>use proxies</strong> checkbox will force
+all configured proxies to be used (see the description of
+<strong>geth</strong> preferences for details.)
+
+<li> The <strong> maximum Content Characters</strong> text field allows
+you to specify how many characters of content to display.  If blank,
+the value is taken to be zero.  If the value "*" is used, the
+content length is unbounded.  Otherwise a non-negative integer should
+be entered.
+
+<li> The <strong>Get Headers</strong> button simply causes the URL to
+be loaded. While it is loading, the <strong>Cancel</strong> button
+will be active and can be used to cancel the operation. One can either
+click on the button or simply hit the SPACE key while the contents are
+being loaded.
+
+ </ul>
+
+<h2><a name="output">Output View</a></h2>
+<p>
+Once a request has been sent, the <em>Output</em> view will be
+displayed (you can send simple requests from this view, but to change
+other parameters (i.e, for POST or PUT methods), you must first use
+the <em>Request Data</em> view.  For the <em>Output</em> view, the
+<strong>Page-Up</strong> and <strong>Page-Down</strong> keys will
+scroll the content window up and down by a full page. These keys cause
+text to scroll the start and end of respectively if pushed when the
+control key is down.  The <strong>Home</strong> and
+<strong>End</strong> keys will move the cursor to the start and end of
+the URL text field when this field has the keyboard focus, and for
+convenience, this is usually the case.  To move to the start and end
+of the output, use <strong>Control-PageUp</strong> and
+<strong>Control-PageDown</strong> respectively.
+</p>
+
+<h2><a name="request">Request Data View</a></h2>
+<p>
+The <em>Request Data</em> view can be traversed using keyboard
+navigation. While the platform defaults are used, typically a
+<strong>TAB</strong> key will traverse in one direction,
+<strong>SHIFT-TAB</strong> in the reserve direction, and
+<strong>SPACE</strong> will select the current button. There are two
+exceptions. In the header table and input text frame (the last frame
+in the view), you need to use <strong>CONTROL-TAB</strong> and
+<strong>CONTROL-SHIFT-TAB</strong>.  Otherwise you will either stay in
+that particular view or will enter a character.  The controls are as
+follows (many contain a button to provide dialog boxes, followed by a
+text box containing the value, and either may be used as desired):
+</p>
+<p>
+There are several controls:
+</p>
+<ul>
+<li>The <strong>connection timeout</strong> control allows you to
+specify a timeout for establishing a connection to a server. The
+units are seconds and a value of 0 indicates an unlimited timeout.
+Setting a timeout is useful when <strong>geth</strong> is used in
+a script as it will allow the script to run to completion if a
+server or connection hangs.
+
+<li>The <strong>read timeout</strong> control allows you to
+specify a timeout for reading data from a server. The
+units are seconds and a value of 0 indicates an unlimited timeout.
+Setting a timeout is useful when <strong>geth</strong> is used in
+a script as it will allow the script to run to completion if a
+server or connection hangs.
+
+<li>The <strong>method</strong> control allows you to select the
+request method (<strong>GET</strong>, <strong>HEAD</strong>,
+<strong>POST</strong>, or <strong>PUT</strong>).
+
+<li>The <strong>URL Encode Request Data</strong> checkbox, when
+selected, causes the text displayed in the lower text area to be URL
+encoded and formatted properly. For this case, form-control names should be
+on a line with no leading spaces, and the corresponding value should
+appear on following lines, indicated by a leading TAB. This leading
+TAB will be removed. Line breaks are otherwise preserved. This syntax
+differs from the one specified for the application/x-www-form-urlencoded
+media type but is much more readable.
+
+<li>The <strong>Input Charset</strong> controls set the charset for any
+text files being read.
+
+<li>The <strong>Mime Type</strong> controls set the media type used in
+a PUT or POST request.  This should be the full media type, including
+parameters.  In particular, a <em>CHARSET</em> parameter should be provided
+(and this may be different from the one provided by the
+<strong>Input Charset</strong> control, with charset conversion handled
+automatically for text files.
+
+<li>The <strong> Header File</strong> controls set the file name in
+which additional headers can be found.  These must consist of names,
+followed by a colon, in turn followed by a value, all on one line
+per header. Once loaded, the headers specified the file will appear
+in a table, with previous entries removed.
+
+<li>The <strong>Data File</strong> controls set the file name in which
+the input can be found. Once loaded, for recognized text formats, the
+contents of the file will be displayed. Otherwise the file name will
+be shown.
+</ul>
+<p>
+The headers and values that will be used will appear in a header table
+and text area (separated by a movable bar.) These are controlled by
+five buttons:
+</p>
+<ul>
+<li>The <strong>Append Row</strong> button adds an empty row to the
+header table.
+
+<li>The <strong>Insert Row</strong> button inserts an empty row into
+the header table. A single row must be selected to indicate the insertion
+point.
+
+<li>The <strong>Delete Rows</strong> button deletes the rows that are
+currently selected.
+
+<li>The <strong>Load</strong> button loads the contents of the header
+and data files.
+
+<li>The <strong>Clear Data & Hdrs</strong> button clears the contents
+of the header table and input data text box.
+
+</ul>
+
+<p>
+While normally one will simply read in data from a file, the user may
+also choose to edit the text or header values.  The edited values will
+be used when possible.  For binary data or any text format not
+recognized by geth, an indication of the file name will appear in the
+text box, and cannot be meaningfully edited. In most cases there will
+be no attempt at verifying that the data provided has the format
+specified by the corresponding media type - as am example, for testing
+web severs it can be useful to be able to send incorrectly formatted
+data.
+</p>
+
+<h2><a name="prefs">Preferences View</a></h2>
+
+<p>Preferences can be displayed and modified by selecting the
+Preferences item in the View menu, which will show a series of check
+boxes and text fields.  The check boxes enable various proxies (HTTP,
+HTTPS, FTP, and SOCKS.)  An additional checkbox sets the default value
+for the "use proxy" checkbox (the value used when
+<strong>geth</strong> is started) in the top portion of the frame. A
+final checkbox allows the user-agent header to be changed from the
+default (e.g., to mimic a specific browser for cases where a web page
+may provide different content for one browser than another.)
+</p>
+
+<p>For each proxy that is going to be used, the proxy text fields
+should give a host (or internet address in "dot" notation) and a
+port number.  The "Exclude from Proxy" text fields may contain a
+hosts for which the proxy should <strong>not</strong> be used, with
+each host separated from the others by a vertical bar "|". Each
+host name can contain a "*", which serves as a wildcard.
+</p>
+
+<p>
+The "Save Preferences" button should be clicked to save a change in
+preferences so that these values will be loaded when
+<strong>geth</strong> is restarted.  The "Cancel Changes" button
+causes preferences to revert the last saved values or the initial
+value when <strong>geth</strong> was started. Regardless of whether
+the current preferences have been saved, the values displayed will be
+in effect whenever the application gets HTTP headers from a web site.
+The <strong>Export Prefs</strong> menu option will store the current
+preferences in a file so these can be used with the <strong>-P</strong>
+option (when used with a GUI, this options suppresses the preferences
+panel).
+</p>
+
+<h2><a name="menus">Menus</a></h2>
+
+<p>The <strong>geth</strong> application has 4 menus.</p>
+
+<ul>
+
+<li>A <strong>File</strong> menu provides four options:
+    <dl>
+
+    <dt><strong>Save</strong> <dd>Copy the currently displayed headers
+    and content to a file.
+
+    <dt><strong>Print to Stdout</strong>
+    <dd> Copy the currently displayed headers to the programs
+    standard output.  This is useful primarily if the output is
+    redirected to a file or piped to another program.
+
+    <dt><strong>Print</strong>
+    <dd>Print the currently displayed headers.
+
+    <dt><strong>Export Prefs</strong>
+    <dd>Copy the current preference settings to a Java property file so
+    these can be reloaded via a command-line option as described
+    below. The preferences exported will be ones in text fields for
+    which the corresponding checkbox has been selected (i.e.,
+    checked.)
+
+    </dl>
+
+<li>The <strong>View</strong> menu contains there options:
+    <dl>
+    <dt><strong>Request Data</strong>
+    <dd>Display options for formulating a request.
+    <dt><strong>Output</strong>
+    <dd>Display the panel that will show HTTP headers and content.
+    <dt><strong>Preferences</strong>
+    <dd>Display the current set of preferences for editing.
+    </dl>
+
+<li> The <strong>Go</strong> menu provides four options:
+    <dl>
+    <dt><strong>Page Up</strong>
+    <dd>Move the <strong>Output</strong> display up by the current
+    window size.
+
+    <dt><strong>Page Down</strong>
+    <dd>Move the <strong>Output</strong> display down by the current
+    window size.
+
+    <dt><strong>Top</strong>
+    <dd>Move the <strong>Output</strong> display to the beginning of
+    the output.
+
+    <dt><strong>Bottom</strong>
+    <dd>Move the <strong>Output</strong> display to the end of the
+    output.
+    </dl>
+    These options have keyboard equivalents: <em>PageUp</em>,
+    <em>PageDown</em>, <em>Control-PageUp</em>, and
+    <em>Control-PageDown</em> respectively.  The <em>Home</em> and
+    <em>End</em> keys are not used to move to the top and bottom of
+    the output due to these being used by a text field using the
+    standard Java look and feel.
+
+<li> The <strong>Help</strong> menu displays this manual. It has one
+item named <strong>Manual</strong>.
+
+</ul>
+
+<h2><a name="terminal">Running from a Terminal</a></h2>
+
+<p>When started with no arguments, the GUI is displayed. Otherwise
+the syntax is
+</p>
+<blockquote>
+<pre>
+<strong>geth [-p ] [-P </strong>PROPFILE <strong>] \
+     [-u] [-m get|head|post|put] [-n </strong>N<strong>|all] \
+     [-c </strong>CHARSET<strong>] [-t </strong>MEDIATYPE<strong>] \
+     [-h </strong>HEADERFILE<strong>] [-i </strong>INPUTFILE<strong>] </strong>URL<strong>
+geth -h</strong>
+</pre>
+</blockquote>
+
+<p> The URL argument must be a URL for a supported protocol.  Most of
+the options (there are two exceptions) take a mandatory argument. This
+argument must be a single token as seen by a shell, and will in some
+cases have to be quoted (the main case is the <strong>-t</strong>
+option, as a media type may include characters interpreted by a shell.)
+The options are as follows:
+</p>
+
+<ul>
+
+<li>The <strong>-c</strong> option specifies the charset used by a
+text input file (this may be different than the one given in the
+request'<!--'-->s media type.)
+
+<li>The <strong>-h</strong> option provides an input file containing
+headers.  the name of the header should appear first on each line,
+followed by a colon (:), and then the value. Continuation lines are
+not supported.  Note that certain headers (Content-Length)
+are provided automatically by the underlying java implementation.
+Other headers can be overridden (Accept) and some should not be
+provided at all (Transfer-Encoding).
+If the only command-line argument is
+<strong>-h</strong> with no value, a short help message is printed.
+
+<li>The <strong>-i</strong> option provides an input file for use with
+the POST or PUT methods.  Character conversion is provided for text
+files (as determined by the media type). Other files are used
+unmodified.
+
+<li>The <strong>-m</strong> option provides the method used to send a
+request. Supported values are <strong>GET</strong>,
+<strong>HEAD</strong>, <strong>POST</strong>, and
+<strong>PUT</strong>.
+
+<li>The <strong>-n</strong> option provides the number of characters
+of the content to display, assuming the content is printable as
+text. The default is 0.  The keyword <strong>all</strong> is
+equivalent to the maximum integer that Java will support.
+
+<li>The <strong>-t</strong> option provides a media type for use with
+the GET and PUT methods.  A text media type should contain a charset
+parameter (e.g., <tt>text/plain; charset=US-ASCII</tt>) so that the
+request will be sent using the correct charset.
+
+<li>The <strong>-P</strong> option allows a file PROPFILE to be read.
+This file is assumed to contain a collection of Java properties that
+will be used to configure the application, and will turn on proxy
+support when this has been configured. The <strong>-P</strong> option
+is provided so that one may easily switch between choices of proxies,
+and can also set other options as well, such as those used to provide
+a keystore or truststore for HTTPS. Both the <strong>-p</strong> and
+the <strong>-P</strong> option cannot be used as the same time.
+Unlike other command-line options, the <strong>-P</strong> can be
+used when starting the GUI. In that case, the preferences panels
+and menu items will be suppressed.
+
+<li>The <strong>-p</strong> option causes the default preferences to
+be used. Both the <strong>-p</strong> and the <strong>-P</strong>
+option cannot be used as the same time.
+
+<li>The <strong>-u</strong> option indicates that any text file
+provided should be URL encoded.  The names for a control appear at the
+start of a line, followed by one or more lines containing values. The
+lines containing values must start with a tab, which will be ignored.
+
+</ul>
+
+<p> When run with command-line arguments, output appears on standard
+output.  The main use of the command-line options is for use of the
+program in a script.
+</p>
+
+<h2>Exported Preference Syntax</h2>
+
+<p>An exported preference file is a Java property file that contains
+lines with keyword-value pairs, separated by either a colon or an
+equal sign. blank lines and lines starting with "#" or "!" are
+ignored.  Long lines may be continued by placing a backslash "\"
+at the end. The following properties are recognized:
+</p>
+
+<ul>
+
+<li><strong>http.ProxyHost</strong> - the host name or IP address (in
+"dot" notation of an HTTP proxy.
+
+<li><strong>http.ProxyPort</strong> - the TCP port number for an HTTP
+proxy
+
+<li><strong>http.nonProxyHosts</strong> - a "|" separated list of
+hosts or IP addresses of hosts that should not go through an HTTP or
+an HTTPS proxy. A "*" can be used as a wildcard in qualified domain
+names.
+
+<li><strong>https.ProxyHost</strong> - the host name or IP address (in
+"dot" notation of an HTTPS (HTTP over SSL) proxy.
+
+<li><strong>https.ProxyPort</strong> - the TCP port number for an HTTPS
+proxy.
+
+<li><strong>ftp.ProxyHost</strong> - the host name or IP address (in
+"dot" notation of an FTP proxy.
+
+<li><strong>ftp.ProxyPort</strong>  - the TCP port number for an FTP
+proxy.
+
+<li><strong>ftp.nonProxyHosts</strong> - a "|" separated list of
+hosts or IP addresses of hosts that should not go through an FTP
+proxy. A "*" can be used as a wildcard in qualified domain names.
+
+<li><strong>socksProxyHost</strong> - the host name or IP address of
+a SOCKS proxy.
+
+<li><strong>socksProxyPort</strong> - the port used by a SOCKS proxy.
+
+<li><strong>http.agent</strong> The user agent that
+<strong>geth</strong> advertises in HTTP requests. Some servers may
+change their responses based on this field, although many do not.
+The user agent advertised in HTTP requests may include some
+additional text indicating which version of Java is being used.
+To precisely mimic the behavior of some other software, one
+should explicitly set a <strong>User-Agent</strong> header
+as described in the <a href="#request">Request</a> section.
+</ul>
+
+<p> These are the same system properties as those defined in the
+Java class libraries for networking.  Additional java options can
+be used as well and particularly useful ones are:
+</p>
+<UL>
+  <LI><strong>java.net.socks.username</strong>.
+    This property provides a username for a SOCkSv5 server that
+    requires user authentication
+  <LI><strong>java.net.socks.password</strong>.
+    This property provides the password to use for a SOCKS server
+    that provides authentication
+  <LI><strong>java.net.useSystemProxies</strong>.
+    This indicates whether system proxies should be used. The value
+    must be either "true" or "false". The default is "false".
+  <LI><strong>javax.net.ssl.keyStore</strong>.
+    This property provides the file name for the keystore
+  <LI><strong>javax.net.ssl.keyStoreType</strong>.
+    This property provides the type of the keystore. The default normally
+    suffices (keytool should automatically provide the default type).
+  <LI><strong>javax.net.ssl.keyStorePassword</strong>.
+    This property provides the password for the keystore. A requirement
+    when using this property is that the 'store' password and 'key' password
+    are identical.
+  <LI><strong>javax.net.ssl.trustStore</strong>.
+    This property provides the file name for the truststore.
+  <LI><strong>javax.net.ssl.keyStoreType</strong>.
+    This property provides the type of the truststore. The default normally
+    suffices (keytool should automatically provide the default type).
+  <LI><strong>javax.net.ssl.trustStorePassword</strong>.
+    This property provides the password for the truststore.
+</UL>
+<P>
+For example, the following program implements a trivial web server
+using HTTPS, coded using the libbzdev-java package:
+<BLOCKQUOTE><PRE><CODE>
+     import org.bzdev.ejws.*;
+     import org.bzdev.ejws.maps.*;
+
+     public class STest {
+         public static void main(String argv[]) throws Exception {
+            EmbeddedWebServer ews =
+              new EmbeddedWebServer(8080, 48, 10,
+                                    new
+                                    EmbeddedWebServer.SSLSetup());
+            ews.add("/", DirWebMap.class, new File("./", null, 
+                    true, true, true);
+            ews.start();
+         }
+     }
+</CODE></PRE></BLOCKQUOTE>
+<P>
+The corresponding geth property files (assume it is named PropFile) is
+<BLOCKQUOTE><PRE><CODE>
+    javax.net.ssl.trustStore = /usr/share/bzdev/ejwsCerts.jks
+    javax.net.ssl.trustStorePassword = changeit
+</CODE></PRE></BLOCKQUOTE>
+which can be used with the command
+<BLOCKQUOTE><PRE><CODE>
+     % geth -P PropFile
+</CODE></PRE></BLOCKQUOTE>
+Then geth will have the certificate needed to connect to the server
+at &lt;https://localhost:8080/&gt;.
+
+</body>
+</html>
+
+<!--  LocalWords:  Geth geth HTTPS PageUp PageDown Charset charset
+ -->
+<!--  LocalWords:  Hdrs Prefs Stdout PROPFILE MEDIATYPE HEADERFILE TCP
+ -->
+<!--  LocalWords:  INPUTFILE http ProxyHost ProxyPort nonProxyHosts
+ -->
+<!--  LocalWords:  https SSL socksProxyHost socksProxyPort www SOCkSv
+ -->
+<!--  LocalWords:  urlencoded keystore truststore keytool
+ -->
