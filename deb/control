@@ -1,4 +1,4 @@
-Package: geth
+Package: gethdrs
 Version: VERSION
 Section: contrib/web
 Priority: optional

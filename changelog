@@ -1,3 +1,11 @@
+gethdrs(1.1) unstable; urgency=low
+  *  Changed the program name and the Debian package name to gethdrs.
+     While this application predated some ethereum stuff by decades,
+     there is another package named geth, so the name of the package
+     and the command was changed to avoid a conflict.
+
+ --  Bill Zaumen <bill.zaumen@gmail.com>  Sun, 12 Feb 2023 11:51:04 -0800
+
 geth(1.0.1) unstable; urgency=low
   *  Changed the frame width so its minimum size is computed on the
      basis of a label and text field. The reason for the change is that

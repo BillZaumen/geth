@@ -1,15 +1,15 @@
-.TH EPTS "5" "Apr 2020" "geth VERSION" "File Formats and Conversions"
+.TH GETHDRS "5" "Apr 2020" "gethdrs VERSION" "File Formats and Conversions"
 .SH NAME
-geth \- geth file formats
+gethdrs \- gethdrs file formats
 .SH DESCRIPTION
-.B geth
+.B gethdrs
 can be configures using three types of files.
 .SH PROPERTY FILES
 When the
-.B geth
+.B gethdrs
 .B \-P
 option is used, the file provided to
-.B geth
+.B gethdrs
 must be a Java properties file that records preferences
 Such files contain a key, followed by a colon or equal sign,
 followed by a value.
@@ -27,7 +27,7 @@ File menu's "Export Prefs" menu item.
 One preference is a special case: one can configure the
 user-agent header explicitly.
 The preferences that
-.B gethp
+.B gethdrsp
 uses for configuring proxies are the following:
 .TP
 .B http.proxyHost
@@ -119,14 +119,14 @@ Files that contain data that will be sent in HTTP requests in
 most cases consist of the data as it will be transmitted.
 For files whose media type is application/x-www-form-urlencoded,
 the
-.B geth
+.B gethdrs
 .B \-u
 option will force
-.B geth
+.B gethdrs
 to perform the URL encoding. Otherwise it must be done when the file
 is created.
 .SH SEE ALSO
-.BR geth (1)
+.BR gethdrs (1)
 
 \"  LocalWords:  EPTS geth Prefs gethp TP http proxyHost proxyPort
 \"  LocalWords:  TCP nonProxyHosts HTTPS https socksProxyHost SOCkSv

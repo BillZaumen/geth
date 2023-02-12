@@ -1,12 +1,12 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=GETH
+Name=GETHDRS
 GenericName=Viewer for HTTP Headers
 Comment=Perform an HTTP request and show the headers from the response
-Exec=geth
-TryExec=geth
+Exec=gethdrs
+TryExec=gethdrs
 Terminal=false
 Type=Application
-Icon=/usr/share/icons/hicolor/scalable/apps/geth.svg
+Icon=/usr/share/icons/hicolor/scalable/apps/gethdrs.svg
 Categories=System;Utility;
 StartupNotify=false

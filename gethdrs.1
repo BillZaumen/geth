@@ -1,26 +1,26 @@
-.TH GETH "1" "Apr 2020" "geth VERSION" "User Commands"
+.TH GETHDRS "1" "Apr 2020" "gethdrs VERSION" "User Commands"
 .SH NAME
 .PP
-geth \- Trace HTTP and HTTPS responses
+gethdrs \- Trace HTTP and HTTPS responses
 .SH SYNOPSIS
 .PP
-.B geth
+.B gethdrs
 .br
-.B geth
+.B gethdrs
 [\FIOPTIONS\fR]
 .I URL
 .br
-.B geth \-h
+.B gethdrs \-h
 .SH DESCRIPTION
 The program
-.B geth
+.B gethdrs
 is intended as an aid for debugging web servers or web-based applications.
 It provides a listing of headers and possibly data that constitute the
 response to an HTTP request. For complex cases, such as a
 series of HTTP redirects, the intermediate headers are shown, not just
 the final ones.
 When run with no argument,
-.BR geth ,
+.BR gethdrs ,
 will run as a desktop application. There is an on-line manual with a
 full description of the program available in the application's 'help'
 window.
@@ -86,7 +86,7 @@ This option provides a file
 .I FILE
 containing HTTP request headers. The format of this file is described
 in a separate manual page
-.BR geth (5).
+.BR gethdrs (5).
 .TP
 .B \-p
 This options sets proxy preferences based on the default system
@@ -102,7 +102,7 @@ based on the values provided in
 the file
 .BR FILE .
 The format of this file is described in
-.BR geth (5).
+.BR gethdrs (5).
  If the
 .B \-P
 is set, the
@@ -113,13 +113,13 @@ option is used and there are no other arguments, the GUI will be
 started with the preferences menu disabled.  One use of the -P option
 is to set Java properties used to configure where SSL looks for
 certificates. These are described in the
-.BR geth (5)
+.BR gethdrs (5)
 portion of the manual and by the on-line help that
-.B geth
+.B gethdrs
 provides. In particular, when a server uses a self-signed certificate,
 a trust store will have to be configured. If there is not a
 certificate in the trust store that matches the server's certificate,
-geth will print a message for a javax.net.ssl.SSHandshakeException
+gethdrs will print a message for a javax.net.ssl.SSHandshakeException
 when attempting to visit/load a web page. The message for this
 exception may include the text, "unable to find valid certification
 path to requested target," which is not particularly
@@ -154,7 +154,7 @@ Using the
 .B \-C and
 .B \-P
 options is particularly useful when
-.B geth
+.B gethdrs
 is used in a script (e.g., for running a series of tests) in order to
 prevent the script from hanging.
 .SH EXIT STATUS
@@ -167,11 +167,11 @@ for normal termination.
 1
 for abnormal termination.
 .SH FILES
-.B /usr/bin/geth
-.B /usr/share/geth/geth.jar
-.B /usr/share/doc/geth/copyright
-.B /usr/share/doc/geth/changelog.gz
-.B /usr/share/doc/geth/changelog.Debian.gz
+.B /usr/bin/gethdrs
+.B /usr/share/gethdrs/geth.jar
+.B /usr/share/doc/gethdrs/copyright
+.B /usr/share/doc/gethdrs/changelog.gz
+.B /usr/share/doc/gethdrs/changelog.Debian.gz
 .SH AUTHOR
 Written by Bill Zaumen
 .SH COPYRIGHT
@@ -182,8 +182,8 @@ This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
 .SH SEE ALSO
 .PP
-.BR geth (5)
+.BR gethdrs (5)
 
-\"  LocalWords:  GETH geth HTTPS br FIOPTIONS fR TP CHARSET UTF MTYPE
+\"  LocalWords:  GETHDRS gethdrs HTTPS br FIOPTIONS fR TP CHARSET UTF MTYPE
 \"  LocalWords:  csh json perl tcl tex troff www urlencoded html xml
 \"  LocalWords:  TQ Zaumen GPLv GPL

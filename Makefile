@@ -1,13 +1,13 @@
-VERSION = 1.0.2
+VERSION = 1.1.0
 DATE = $(shell date -R)
 
 SYS_BINDIR = /usr/bin
 SYS_MANDIR = /usr/share/man
-SYS_DOCDIR = /usr/share/doc/geth
+SYS_DOCDIR = /usr/share/doc/gethdrs
 ICONDIR = /usr/share/icons/hicolor
-SYS_GETHDIR = /usr/share/geth
+SYS_GETHDIR = /usr/share/gethdrs
 
-SED_GETH = $(shell echo $(SYS_BINDIR)/geth | sed s/\\//\\\\\\\\\\//g)
+SED_GETH = $(shell echo $(SYS_BINDIR)/gethdrs | sed s/\\//\\\\\\\\\\//g)
 SED_GETHDIR = $(shell echo $(SYS_GETHDIR) | sed  s/\\//\\\\\\\\\\//g)
 SED_ICONDIR =  $(shell echo $(SYS_ICONDIR) | sed s/\\//\\\\\\\\\\//g)
 
@@ -26,8 +26,8 @@ ICON_DIR = $(DESTDIR)$(SYS_ICON_DIR)
 APP_ICON_DIR = $(DESTDIR)$(SYS_APP_ICON_DIR)
 
 SOURCEICON = icons/geth.svg
-TARGETICON = geth.svg
-TARGETICON_PNG = geth.png
+TARGETICON = gethdrs.svg
+TARGETICON_PNG = gethdrs.png
 
 ICON_WIDTHS = 16 20 22 24 32 36 48 64 72 96 128 192 256 512
 
@@ -74,16 +74,16 @@ install: geth.jar
 	install -d $(APP_ICON_DIR)
 	install -d $(APPDIR)
 	install -m 0644 geth.jar $(GETHDIR)
-	sed -e s/GETHDIR/$(SED_GETHDIR)/ < geth.sh > geth.tmp
-	install -m 0755 -T geth.tmp $(BINDIR)/geth
+	sed -e s/GETHDIR/$(SED_GETHDIR)/ < gethdrs.sh > geth.tmp
+	install -m 0755 -T geth.tmp $(BINDIR)/gethdrs
 	rm geth.tmp
-	sed -e s/VERSION/$(VERSION)/ geth.1 | gzip -n -9 > geth.1.gz
-	sed -e s/VERSION/$(VERSION)/ geth.5 | \
-		gzip -n -9 > geth.5.gz
-	install -m 0644 geth.1.gz $(MANDIR)/man1
-	install -m 0644 geth.5.gz $(MANDIR)/man5
-	rm geth.1.gz
-	rm geth.5.gz
+	sed -e s/VERSION/$(VERSION)/ gethdrs.1 | gzip -n -9 > gethdrs.1.gz
+	sed -e s/VERSION/$(VERSION)/ gethdrs.5 | \
+		gzip -n -9 > gethdrs.5.gz
+	install -m 0644 gethdrs.1.gz $(MANDIR)/man1
+	install -m 0644 gethdrs.5.gz $(MANDIR)/man5
+	rm gethdrs.1.gz
+	rm gethdrs.5.gz
 	install -m 0644 -T $(SOURCEICON) $(APP_ICON_DIR)/$(TARGETICON)
 	for i in $(ICON_WIDTHS) ; do \
 		install -d $(ICON_DIR)/$${i}x$${i}/$(APPS_DIR) ; \
@@ -92,13 +92,13 @@ install: geth.jar
 			$(ICON_DIR)/$${i}x$${i}/$(APPS_DIR)/$(TARGETICON_PNG); \
 		rm tmp.png ; \
 	done
-	install -m 0644 geth.desktop $(APPDIR)
+	install -m 0644 gethdrs.desktop $(APPDIR)
 	gzip -n -9 < changelog > changelog.gz
 	install -m 0644 changelog.gz $(DOCDIR)
 	rm changelog.gz
 	install -m 0644 copyright $(DOCDIR)
 
-DEB = geth_$(VERSION)_all.deb
+DEB = gethdrs_$(VERSION)_all.deb
 
 deb: $(DEB)
 
@@ -111,7 +111,7 @@ debLog:
 
 $(DEB): deb/control copyright changelog deb/changelog.Debian \
                 deb/postinst deb/postrm \
-		geth.jar geth.sh geth.1  Makefile
+		geth.jar gethdrs.sh gethdrs.1  gethdrs.5  Makefile
 	mkdir -p BUILD
 	(cd BUILD ; rm -rf usr DEBIAN)
 	mkdir -p BUILD/DEBIAN
@@ -124,7 +124,7 @@ $(DEB): deb/control copyright changelog deb/changelog.Debian \
 	fakeroot dpkg-deb --build BUILD
 	mv BUILD.deb $(DEB)
 	(cd inst; make)
-	cp inst/geth-install.jar geth-install-$(VERSION).jar
+	cp inst/gethdrs-install.jar gethdrs-install-$(VERSION).jar
 
 icons/geth.svg: icons/geth.eptt icons/geth.epts
 	(cd icons; epts -o geth.svg geth.eptt)
