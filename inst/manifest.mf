@@ -1,0 +1,2 @@
+Main-Class: HttpHeaders
+Class-Path: libbzdev-base.jar libbzdev-desktop.jar

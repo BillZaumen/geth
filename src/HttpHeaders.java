@@ -515,10 +515,10 @@ public class HttpHeaders extends JPanel implements ActionListener {
 
 
    public static HeaderEnumeration getHeaders(String urlstring,
-					       String method,
-					       String mimetype,
-					       TableModel headers,
-					       InputStream data)
+					      String method,
+					      String mimetype,
+					      TableModel headers,
+					      InputStream data)
 	throws Exception {
 	return new HeaderEnumeration(urlstring, method,
 				     mimetype, headers, data);
@@ -676,6 +676,7 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	    boolean urlEncode = false;
 	    String dFileName = null;
 	    String hFileName = null;
+	    boolean justRedirects = false;
 	    while (index < argv.length &&
 		   argv[index].startsWith("-") &&
 		   argv[index].length() > 1) {
@@ -719,13 +720,16 @@ public class HttpHeaders extends JPanel implements ActionListener {
 			dFileName = argv[index];
 		    }
 		    break;
+		case 'r':
+		    justRedirects = true;
+		    break;
 		case 'h':	// extra headers
 		    if ((index + 1) < argv.length) {
 			index++;
 			hFileName = argv[index];
 		    } else if ((index + 1) == argv.length) {
 			System.out.println
-			    ("usage: geth [-u] [-p]"
+			    ("usage: geth [-u] [-p] [-r]"
 			     +" [-m post|get|put|head] \\\n"
 			     +"            [-c CHARSET]"
 			     +" [-t MEDIATYPE]"
@@ -930,7 +934,13 @@ public class HttpHeaders extends JPanel implements ActionListener {
 			}
 
 		    }
-		    System.out.println(key + value);
+		    if (justRedirects) {
+			if (key.startsWith(HeaderEnumeration.separator)) {
+			    System.out.println(key + value);
+			}
+		    } else {
+			System.out.println(key + value);
+		    }
 		}
 		if (bvalue > 0 && !lines.terminatedByException()) {
 		    System.out.println();

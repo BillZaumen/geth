@@ -1,3 +1,9 @@
+gethdrs(1.1.1) unstable; urgency=low
+  *  Added an option -r to show just redirects.  This option works
+     with the command line only, not the GUI.
+
+	--  Bill Zaumen <bill.zaumen@gmail.com>  Sun, 12 Feb 2023 11:51:04 -0800
+
 gethdrs(1.1) unstable; urgency=low
   *  Changed the program name and the Debian package name to gethdrs.
      While this application predated some ethereum stuff by decades,
