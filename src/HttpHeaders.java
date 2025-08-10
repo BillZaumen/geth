@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -611,6 +612,10 @@ public class HttpHeaders extends JPanel implements ActionListener {
 	}
 
 	if (argv.length == index) {
+	    if (GraphicsEnvironment.isHeadless()) {
+		System.err.println(errorMsg("headless"));
+		System.exit(1);
+	    }
 	    javax.swing.SwingUtilities.invokeLater(new Runnable() {
 		    public void run() {
 			hdrTable = new JTable(hdrmodel);

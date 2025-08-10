@@ -1,4 +1,4 @@
-VERSION = 1.1.1
+VERSION = 1.1.2
 DATE = $(shell date -R)
 
 SYS_BINDIR = /usr/bin
@@ -48,7 +48,8 @@ MANUAL = src/manual.xml src/manual.html src/manual.css
 FLAGS = -Xlint:deprecation -Xlint:unchecked
 
 geth.jar: $(JFILES) classes $(PROPERTIES) $(SOURCEICON) $(MANUAL)
-	javac $(FLAGS) -d classes -classpath /usr/share/java/libbzdev.jar \
+	javac --release 11 $(FLAGS) -d classes \
+		-classpath /usr/share/java/libbzdev.jar \
 		$(JFILES)
 	for i in $(MANUAL) ; do cp $$i classes; done
 	for i in $(PROPERTY_DIRS) ; do \
